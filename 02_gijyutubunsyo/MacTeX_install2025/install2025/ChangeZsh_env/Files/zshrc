@@ -1,0 +1,34 @@
+# Change prompt
+PS1="[%n@%m:%1~]\$ "
+
+# Colorizing terminal
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+
+# Aliases
+alias .='pwd'
+alias ..='cd ..'
+alias cd..='cd ..'
+alias cdwd='cd `pwd`'
+alias cwd='echo $cwd'
+alias l='ls -laFGh'
+alias ll='ls -laFGh | more'
+alias ls='ls -aFG'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Some functions
+# list files in x (usage: list x)
+function list() {
+find $1 -type f
+}
+
+# find file named x (usage: fn x)
+function fn() {
+find . -name $1
+}
+
+# Grep thru dictionary (usage: word ***)
+function word() {
+grep $1 /usr/share/dict/web2
+}

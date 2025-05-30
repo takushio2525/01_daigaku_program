@@ -1,0 +1,52 @@
+\documentclass[uplatex]{jsarticle}
+
+\usepackage{amsmath}
+\usepackage[dvipdfmx]{graphicx}
+\setcounter{tocdepth}{3}
+\usepackage{float}
+\usepackage{moreverb}
+\usepackage{lscape}
+\usepackage{ascmac}
+
+\title{第6回目の課題}
+\author{25G1065 塩澤匠生}
+%\date{2015年11月13日}
+
+\begin{document}
+
+\maketitle
+
+\section{演習問題:行内に数式を記述する場合}
+% この下の行に入力
+
+オームの法則は，電圧$V$[V] と電流$I$[A]，抵抗$R$ [$\Omega$] の間に成立する関係： $V=IR$で表すことができる．
+
+\section{演習問題: 独立した行に数式を記述する場合}
+% この下の行に入力
+
+オームの法則は，電圧$V$[V] と電流$I$[A]，抵抗$R$ [$\Omega$] の間に成立する関係式で
+(\ref{eq:VIR}) 式で表すことができる．\\
+\begin{equation}
+V=IR\label{eq:VIR}
+\end{equation}
+ここで，本実験では，$R=1$ [$\Omega$] の抵抗を用いる．
+
+\section{演習問題: 表の記述}
+
+\begin{table}[htb]
+    \centering
+    \caption{抵抗$R=1.0$ [$\Omega$] の場合の電流値$I$ [A] と電圧値$E$ [V]．}
+    \label{table:EVR1}
+    \begin{tabular}{cc}
+        \hline
+        電流$I$ [A] & 電圧$E$ [V]\\\hline\hline
+        $1.0$ & $1.0$ \\\hline
+        $2.0$ & $2.0$ \\\hline
+        $3.0$ & $3.0$ \\\hline
+        $4.0$ & $4.0$ \\\hline
+        $5.0$ & $5.0$ \\\hline
+        $6.0$ & $6.0$ \\\hline
+        \end{tabular}
+    \end{table}
+
+\end{document}

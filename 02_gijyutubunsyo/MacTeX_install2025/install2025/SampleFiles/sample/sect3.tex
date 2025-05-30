@@ -1,0 +1,350 @@
+\section{本稿のソースファイルの中身}
+
+それでは，具体的に本稿のソースファイル，\texttt{sample.tex}の中身を見ながら，どのように記述していくのかを見ていく．
+{\LaTeX}のソースコードは「ドキュメントクラス」「プリアンブル」「ドキュメント環境」の3つから成る．\ajMaru{1} 初めにドキュメントクラスを宣言し，\ajMaru{2} 次にプリアンブルで文書に必要なパッケージを読み込み，\ajMaru{3} ドキュメント環境の中で文章を記述していく．{\LaTeX}を用いた文書作成では，どの派生エンジンを用いてもこれが基本となる．
+
+\subsection{ドキュメントクラス}
+
+
+ドキュメントクラスとは，{\LaTeX}で作成する「文書の種類」を意味し，コンパイルするソースファイル（この場合，{\ttfamily sample.tex}）において\gtbf{必ず最初に指定}する必要がある．
+それには以下の構文で記述する．
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{lstlisting}
+\documentclass[オプション]{ドキュメントクラス}
+\end{lstlisting}
+\end{tcolorbox}
+\noindent 代表的なドキュメントクラスを表\ref{dcls}に示す．
+
+\begin{table}[bt]
+\centering
+\caption{よく使われるドキュメントクラス}\label{dcls}
+\begin{tabular}{|l||l|l|l|l|l|} \hline
+\textsf{\small 用途} & \textsf{\small 欧文（標準）}& \textsf{\small 和文（横書き）}& \textsf{\small 和文（縦書き）}& \textsf{\small 和文（新・縦横）}&\textsf{\small 和文（新・縦横）}\\\hline
+{\small 論文・レポート} & article & \textcolor{lightgray}{jarticle} & \textcolor{lightgray}{tarticle} & jsarticle&\textcolor{red}{jlreq}\\
+{\small 長い報告書} & report & \textcolor{lightgray}{jreport} & \textcolor{lightgray}{treport} & jsreport&{\small （オプション指定）}\\
+{\small 本} & book & \textcolor{lightgray}{jbook} & \textcolor{lightgray}{tbook} & jsbook&{\small （オプション指定）}\\ \hline 
+\end{tabular}
+\end{table}
+
+
+
+ドキュメントクラスは，文書の用途に応じた標準書式を定義するものであり，
+文書のレイアウトや見出しなどの様式を作成者によらず共通にすることができる．
+2列目と3列目のクラス（jclasses）は，{p\LaTeX}の初期の頃に作られた古いパッケージであり，
+日本語組版の満たすべき標準的な要件を満たせないことが多い．そのため，現在では4列目のjsclassesパッケージ\cite{jscls}を使うのが一般的になったが，日本語組版処理の要件（Requirements for Japanese Text Layout）\cite{jlw3c}を満たすことを目指したjlreq \cite{jlreq}が登場して以降は，
+そちらにトレンドが移りつつある\footnote{jsclassesは，標準のフォントサイズ（10pt）で使用する場合はよいが，
+12ptなどを用いると長さの扱いが面倒になる．例えば，\texttt{\textbackslash hspace\{10cm\}}とすると12cmのスペースが空く．これは，縮小した用紙サイズで10ptのフォントサイズで組版してから最後に用紙全体を1.2倍に拡大してフォントサイズが12ptになるようにするという方式を採用しているためである．}．他にもjsclassesパッケージにおける(u)p{\LaTeX}依存の部分を無くし，Lua{\TeX}等でも使えるようにしたBXjsclsパッケージなどもあるが，\gtbf{授業の課題等で日本語のレポートを書く場合は，\textbf{\texttt{jlreq}}を使用}するのがよい．
+ドキュメントクラスごとに指定するオプションでは，用紙サイズやフォントサイズなどを
+指定するが，詳しくはjlreqのドキュメントを参照のこと．
+\begin{screen}
+\small\sffamily
+ドキュメントクラスの設定では，指定していないオプションはデフォルトの値が使われる．
+\end{screen}
+\begin{screen}
+\small\sffamily
+{\TeX}は開発速度が速いので，インターネットや書籍などで情報を探したときに，\texttt{jarticle}などを指定しているものは，情報が古いだけでなく，現在では好ましくない方法の場合もあるので参考にすべきではない．なるべく最新のドキュメントを確認すべきである．
+\end{screen}
+
+なお，jlreqでは，使用する{\LaTeX}エンジンによって処理内容が異なる項目があるため，
+クラスオプションで処理エンジンに{up\LaTeX}を使用することを明示しておく方がよい
+（自動判別の機能もあるが，指定しておくことが推奨されている）．
+また，文字色をつける\texttt{xcolor}や図版や写真を埋め込む\texttt{graphicx}などの特定の
+パッケージを使用する場合，DVIドライバを指定しないと期待通りの出力にならないことがあるが，
+ドキュメントクラスのオプションはグローバルオプションとも呼ばれ，その内容が必要に応じて
+他のパッケージにも伝達される．したがって，documentclassのオプションで DVI ドライバを
+指定しておけば\texttt{xcolor}や\texttt{graphicx}などのパッケージを使う場合に，
+いちいち同じ指定を繰り返す必要がなくなる．そのため，ここでDVIファイルをPDFに
+変換するDVIドライバとして\texttt{dvipdfmx}を指定しておく．
+標準的には以下の通りとなり，本稿でも同じ指定にしている．
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{lstlisting}
+\documentclass[uplatex,dvipdfmx]{jlreq}
+\end{lstlisting}
+\end{tcolorbox}
+
+\subsection{プリアンブル}
+
+\subsubsection{パッケージの読み込み}
+
+プリアンブルでは，実際の文書の内容を書き始める前に，本文中で使うコマンドやフォントの取り扱いなどが定義されたパッケージを指定したり，文書のタイトル情報などを入力する．パッケージに含まれない独自の定義などもここで行う．
+プリアンブルにおけるパッケージの読み込みは以下の構文で行う．
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{lstlisting}
+\usepackage[オプション]{パッケージ}
+\end{lstlisting}
+\end{tcolorbox}
+
+パッケージは膨大な種類が開発されている（インストールされた「TeX Live ユーティリティ」の
+パッケージのタブでその種類を確認できる）ので，その全てを把握することは不可能に近いが，
+ここでは，本サンプルで採用したものを説明する．
+本稿では以下のパッケージを読み込んでいる．
+\begin{tcolorbox}[title=\gtbf{本稿で採用したパッケージ},colback=blue!5!white,colframe=blue!75!black,enhanced,breakable=true]
+\begin{lstlisting}
+\usepackage{jlreq-deluxe}
+\usepackage[noalphabet,hiragino-highsierra-pron]{pxchfon}
+\usepackage[T1,LGR]{fontenc}
+\usepackage{stix2}
+\usepackage{roboto}
+\usepackage[scale=0.95]{roboto-mono}
+\usepackage[fleqn,tbtags]{mathtools}     % 数式関連 (w/ amsmath)
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{xcolor}
+\usepackage{pxrubrica}                   % ルビの機能
+\usepackage{ascmac}                      % screen/itembox/shadebox環境
+\usepackage{tcolorbox}                   % 様々な枠環境
+\tcbuselibrary{listings,skins,breakable} % tcolorboxのオプション
+\usepackage{listings,plistings}          % ソースコードの表示機能
+\lstset{                                 % listingsのオプション
+  aboveskip=0pt,
+  belowskip=0pt,
+  language={[LaTeX]TeX}, 
+  morekeywords={% パッケージにコマンドや関数と認識されないものを列挙しておく．
+                % 本例では和文用のコマンドなどを登録している．
+  appendix, maketitle, textmc, textgt, textmg, mcfamily,
+  gtfamily, mgfamily, ebseries},
+  backgroundcolor={},% 
+  basicstyle={\small\ttfamily},% 
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red},
+  breaklines=true} 
+\usepackage[dvipdfmx]{hyperref}
+\hypersetup{%
+  bookmarksnumbered=true,%
+  colorlinks=true,%
+  linkcolor=magenta,
+  citecolor=blue,
+  urlcolor=blue}
+\usepackage[dvipdfmx]{pxjahyper}     % (u)pLaTeXのときは必要
+\usepackage{hira-stix} % ヒラギノフォントの代替フォント定義（Warning回避）
+\end{lstlisting}
+\end{tcolorbox}
+
+\begin{itemize}
+\item{\sffamily\bfseries jlreq-deluxe パッケージ}は，(u)p{\LaTeX}でjlreqクラス
+使用時に多書体（多ウエイト）の和文フォントを利用可能にするパッケージである\cite{jlreq-deluxe}．
+予め明朝体で2ウエイト（細明朝（W3）と{\bfseries 中太明朝（W6）}，ゴシック体で2ウエイト（{\sffamily 細ゴシック（W3）}，{\sffamily\bfseries 中太ゴシック（W6）}，
+さらに{\mgfamily 中細丸ゴシック（W4\footnote{アルファベットや数字は欧文フォントが使用されるが，丸ゴシック体に相当する欧文フォントの設定がない．そのため，このW4はセリフ体のフォントで表示されている．詳しくは次節参照．}）}の計5書体が設定される．
+実はこの機能は，日本語文書作成時に(u)p{\LaTeX}で OpenType フォント
+（Unicode 対応フォント）を扱えるようにするOTFパッケージ\cite{OTF}のオプションで
+deluxeを指定したときと同じである．
+しかし，jlreqクラス使用時にOTFパッケージを利用すると，jlreqクラスの意図する組版結果が
+得られなくなってしまう．そのためOTFパッケージとの互換性を保ちながら開発された．
+オプションは，OTFパッケージと同じであるが，up{\LaTeX}で使用するなら特に指定する必要はない．
+
+\item{\sffamily\bfseries pxchfon パッケージ}は，{p\LaTeX}/{up\LaTeX} $+$ dvipdfmxの環境で，
+日本語文書で使える7書体（明朝体3ウエイト，ゴシック体3ウエイト，丸ゴシック体1ウエイト）をユーザ指定のフォントに設定するパッケージである\cite{pxchfon}．ただし，MacOSに内蔵されているヒラギノフォントは明朝が2ウエイト（W3とW6），ゴシックが10ウエイト（W0$\sim$W9），丸ゴシックが1ウエイト（W4）であるため，内蔵ヒラギノフォントを使う場合に設定できるのは6書体（細明朝（W3），\mcbf{中太明朝（W6）}，{\sffamily 細ゴシック（W3）}，\gtbf{中太ゴシック（W6）}，{\gtfamily\ebseries 特太ゴシック（\robotoBlack{W8}）}および{\mgfamily 中細丸ゴシック（\robotoRegular{W4}）}）のみとなる．
+オプションに\texttt{hiragino-highsierra-pron}を指定すると，ヒラギノ6書体が使える設定になる．
+なお，多書体を使うには，\gtbf{先にjlreq-deluxeパッケージを読み込んでおく必要がある}．
+論文やレポートを書くときに使用する和文フォントはせいぜい2$\sim$3書体程度であるので，通常はjlreq-deluxeパッケージを使用するだけでもよい．
+
+また，オプションには，\texttt{alphabet}，\texttt{noalphabet}，\texttt{relfont}（この3つは排他的で同時に使用できない）のいずれかを記述する．\texttt{alphabet}や\texttt{relfont}は，英数字部分も指定の和文フォントの英数字を使って表示する設定である．ただし，半角等幅の字体しか表示できない制約があり，見た目のバランスが良くない．したがって，通常は\texttt{noalphabet}（英数字に和文フォントを使用しない設定）にするのが一般的である．そうすることで，英数字部分はプロポーショナルな欧文フォントが使われ，数式ともバランスが取れる．
+
+\item{\sffamily\bfseries fontenc パッケージ}は，フォントのエンコーディングを指定するパッケージであり\cite{fontenc}，各種欧文フォントパッケージを使用するときに，オプションでエンコーディング方式を指定する．このパッケージで最も一般的なオプションであるT1は，欧州言語の文字のエンコーディングで，ほとんどのアクセント文字が定義される．他に，T1の拡張エンコーディングであるTS1，Knuth博士が作った{\TeX}のオリジナルの7ビットエンコーディングであるOT1，ギリシャ文字のエンコーディングであるLGR，
+日本語の横書きと縦書き文字用のJY1とJT1（up\LaTeX を使う時はJY2/JT2，Lua\TeX-jaの場合はJY3/JT3にする），{\TeX}の数式用フォントを販売していたY\&Y社が定めたLY1などがあり\footnote{
+{\TeX}のエンコーディングは命名規則があり，以下の文字で始まるエンコーディング名は予約されている．T（標準 256 文字のテキスト），TS （対応する T エンコーディングを拡張するように設計されたシンボルエンコーディング），X（T エンコーディングの厳密な要件に準拠しないテキストエンコーディング），M（標準 256 文字の数式用エンコーディング），S（その他のシンボルエンコーディング），A（その他の特殊なアプリケーション），OT（標準 128 文字のテキストエンコーディング），および OM（標準 128 文字の数式用エンコーディング）．サイトまたはシステムにローカルなエンコーディング方式は L で始まり，広く配布することを目的とした実験的なエンコーディングは E で始まる．}，使用するフォントに応じて変更あるいは追加する．
+\begin{screen}
+\small\sffamily
+初期の欧文{\TeX}では符号空間が7ビット，すなわち1つのフォントで表せる文字は128種類しかなかった．そのため，初期のCMフォントは7ビットフォントであったが，その後，欧文{\LaTeX}では8ビットフォントが標準になり，現在では100万を超える欧文以外の文字も表せるUnicode対応フォントを扱える{\LaTeX}が普及している．ここでのエンコーディングとは，使用するフォントがどのような文字セットをもつフォントなのかを{\TeX}に伝えるもので，UTF-8のようなソースファイルの文字コードとは異なる．
+\end{screen}
+
+\item{\sffamily\bfseries stix2 パッケージ}は，欧文のセリフ体や数式に STIX（\gtbf{S}cientific and \gtbf{T}echnical \gtbf{I}nformation e\gtbf{X}change）Twoフォントを使用するためのパッケージである\cite{stix2}．
+STIX Two フォントは，アメリカ数学会（AMS: American Mathematical Society）や米国電気電子学会（IEEE: Institute of Electrical and Electronics Engineers）を含む多くの学協会の出版物に
+標準で使われるセリフ体フォントであり，Googleフォントにも採用されている．
+一般に，数式は文字だけでなく特殊な記号等も必要になるため，通常のテキスト用フォントのみでは表現できないことがある．そこで，通常は数式部分に別のフォントを使用するが，その場合，本文のフォントと異なる字形になってしまう．STIX Twoフォントには，STIX Two TextとSTIX Two Mathの2つがあり，数式用にデザインされたフォントが含まれるため，本文のフォントとの整合性は完璧である．また，AMSの配布する数式記述用パッケージ（amsmath）にも対応しているため，それらのコマンドも問題なく使用できるのは大きな利点である．
+
+ところで，STIX Two TextフォントはMacOSにも{\TeX}のディレクトリの中にも4ウエイト分がインストールされているが，{\TeX}で使えるようにするメトリックファイルは2ウエイト分しか用意されていない．ヒラギノの明朝体も2ウエイトのみなのでバランスは取れているが，{\TeX}で使えるのは，ローマン体，イタリック体，スモールキャピタル体がそれぞれ2ウエイト\footnote{レギュラーとボールドが使用されるが，それぞれヒラギノ明朝のW3とW6より若干太いのは気になる．\label{太い}}のみである．また，サンセリフ体やタイプライタ体がない（STIX Two Mathにはどちらもあるが，本文中で使うとバランスが悪い）ため，それらには別のフォントを指定する必要がある．
+
+\item{\sffamily\bfseries roboto パッケージ}は，欧文のサンセリフ体に
+Robotoフォントを使用するためのパッケージである\cite{roboto}．Robotoフォントは，Googleフォントにも採用されており，ヒラギノ角ゴシックともバランスが良いと思う．
+オプションは指定しなくとも，サンセリフ体のみにRobotoが適用される．
+また，ウエイトも6種類使える\footnote{STIX Twoと同様，デフォルトのレギュラーとボールドはヒラギノ角ゴシックのW3とW6より若干太いので，気になる場合はデフォルトの設定ウエイトを1つ下げればよい．本稿では個別に指定したW8の部分以外はそのままにしてある．\label{太い2}}
+ので，パッケージで定義されているコマンド（\verb|\robotoThin{}|，\verb|\robotoLight{}|，\verb|\robotoRegular{}|，\verb|\robotoMedium{}|，\verb|\robotoBold{}|，\verb|\robotoBlack{}|）により個別にウエイトを指定することも可能である．
+本稿では，pxchfon パッケージの説明で{\gtfamily\ebseries 特太ゴシック（\robotoBlack{W8}）}のW8部分で個別に指定している．
+
+\item{\sffamily\bfseries roboto-mono パッケージ}は，欧文のタイプライタ体に
+等幅のRoboto Monoフォントを使用するためのパッケージである\cite{roboto}．オプションは特に指定しなくてよいが，デフォルトのままだと日本語フォント部分に比べてサイズが若干大きく感じるので，ここでは[scale=0.95]に調整している．
+
+
+
+\item{\sffamily\bfseries mathtools パッケージ}は，数式を表現するための機能を提供するパッケージである\cite{mathtools}．従来より{\LaTeX}の数式用のパッケージとして，AMSの開発するamsmathパッケージが使われてきたが，mathtoolsはamsmathの不具合を修正した拡張パッケージである．mathtoolsを読み込むとamsmathパッケージも自動的に読み込まれるので，個別にamsmathを読み込む必要はない．
+オプションには，amsmathのオプションを書くことも可能である．ここでは，数式の配置を文章幅の左右中央ではなく，左から一定の字下げの後で行う\texttt{fleqn}と，複数行に折り返す式を書く時の式番号が，番号を右側に配置するときは一番下，番号を左側に配置するときは一番上に配置される\texttt{tbtags}を指定している．mathtoolsやamsmathのオプションは多数あるので，詳しくはドキュメントを参照のこと．
+
+\item{\sffamily\bfseries graphicx パッケージ}は，文書に画像を挿入したり，テキストや図の拡大・縮小・回転を行うためのパッケージである\cite{graphicx}．図はEPS（Encapsulated PostScript）あるいはPDFで用意し，写真であればPNG（Portable Network Graphics）あるいはJPG（Joint Photographic Experts Group）で用意しておく．{\TeX}そのものには画像を処理する機能はなく，画像を配置する領域を確保するだけであり，実際の処理はDVIウェアが行う．したがって，オプションには，DVIドライバの記述が必要である．また，\gtbf{写真は解像度を適切に下げて}おかないと最終的にできあがるPDFファイルのサイズがサーバ等のアップロードサイズの上限を超えることがあるので注意する．
+
+\item{\sffamily\bfseries xcolor パッケージ}は，文字に色をつけるために使用するパッケージである\cite{xcolor}．オプションには，DVIドライバが必要である．
+
+\item{\sffamily\bfseries pxrubrica パッケージ}は，日本語組版においてルビや圏点をつけるために使用するパッケージである\cite{pxrubrica}．オプションは存在しない．
+
+\item{\sffamily\bfseries ascmac パッケージ}は．図や罫線で囲んだボックスを出力する命令などを提供するパッケージである\cite{ascmac}．詳細はドキュメントを参照のこと．
+
+\item{\sffamily\bfseries tcolorbox パッケージ}は，文章などを枠で囲む機能を提供するパッケージである\cite{tcolorbox}．オプションが豊富にあるので，他のパッケージのように\verb|[ ]|の中に羅列すると非常に長くなることがある．その場合，別のコマンド\verb|\tcbuselibrary|を使って別に列挙する方が整理して記述できる．本稿では{\TeX}のソースを表示するときの枠に使用している．詳細はドキュメントを参照のこと．色などが関係するので\gtbf{graphicxやxcolorパッケージの後に読み込む}必要がある．以降のパッケージも同様である．
+
+\item{\sffamily\bfseries listings パッケージ}は，文章中でプログラム言語の
+ソースコードなどをリストする機能を提供するパッケージである\cite{listings}．指定した言語の関数部分を色付けするなどの機能ももつ．本稿では，{\TeX}のソース表示に使用している．
+ただし，ソースの中に和文が含まれると正しく表示されないため，和文対応するための拡張パッケージ（jlisting，jvlisting，plistingsなどがある）も読み込む．オプションが豊富にあるので，別のコマンド\verb|\lstset|で列挙し，ここでは{\TeX}のコマンド定義の追加（和文用のコマンドが定義されていないため）や色の指定などをしている．詳細はドキュメントを参照のこと．
+
+\item{\gtbf{hyperref パッケージ}}は，出力のPDFファイルに，HTMLと同様なハイパーリンク機能を加えるためのパッケージである\cite{hyperref}．PDFのしおり機能で目次をつけたり，URLへのリンクを指定したりすることができる．本稿では，目次を自動作成する機能と，リンクに色をつける設定を採用している．
+オプションが豊富にあるので，\verb|\hypersetup|を使って列挙する．詳細はドキュメントを参照のこと．
+
+\item{\gtbf{pxjahyper パッケージ}}は，(u){p\LaTeX} $+$ hyperref $+$ dvipdfmx の組み合わせで
+日本語を含むPDFを作成する際，しおりの文字化けなどを解消するために使用するパッケージである\cite{pxjahyper}．
+オプションも色々設定できるが，高度なことをしないなら読み込んでおくだけでよい．\gtbf{hyperrefパッケージの後に読み込む}こと．
+
+\item{\sffamily\bfseries hira-stix パッケージ}は，ソースファイルのコンパイル時にフォント
+関連のワーニングが多数表示されるのを回避するために，予め代替フォントを定義した独自パッケージである．
+本稿で使用しているフォント（ヒラギノ，STIX Two，Roboto）は書体やウエイトに限りがあるため，ソースファイル上でこれらのフォントに含まれない書体の指定が現れると，指定のフォントがないため別のフォントで代用する旨を表示するワーニングメッセージが沢山表示される．
+ワーニングメッセージが沢山あると，その他の部分にも問題があった場合に，問題箇所の識別が大変になるため，フォントに起因するワーニングメッセージの出現を回避するために簡易的に作成した．オプションはないので，ただ読み込むだけで良い．
+\end{itemize}
+
+以上が，本稿で使用しているパッケージの概要であるが，{\LaTeX}のパッケージは，まだまだ沢山ある．種類や使用法については各自で調べて欲しいが，慣れてくるとパッケージで読み込むスタイルファイルの中身を見ることで理解できることも多い．
+パッケージファイルは\texttt{.sty}の拡張子をもつのが普通で，ターミナル上で簡単に検索できる．例えば，pxchfonパッケージであれば，実体はpxchfon.styなので，その場所は，
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{verbatim}
+>> kpsewhich pxchfon.sty
+/usr/local/texlive/2024/texmf-dist/tex/platex/pxchfon/pxchfon.sty
+\end{verbatim}
+\end{tcolorbox}
+\noindent
+のように検索できる（kpsewhichは{\TeX}によってインストールされるコマンドである）．
+ファイルの部分を除いて，
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{verbatim}
+>> open /usr/local/texlive/2024/texmf-dist/tex/platex/pxchfon/
+\end{verbatim}
+\end{tcolorbox}
+\noindent
+とすればフォルダとして開けるので，テキストエディタなどでファイルの中身を見られる．
+あるいは，ターミナル上で当該ディレクトリに移り，moreやlessコマンド等で見てもよい．
+
+\subsubsection{独自の設定}
+
+プリアンブルにはパッケージの読み込みだけでは設定しきれない，その他の設定を記述することもある．ここでは，pxchfonパッケージで使用する7書体（実際には重複があるので6種類であるが）を
+自分で記述した場合の例を掲載している．
+ここで，MacOSに内蔵のヒラギノフォントは，ゴシック体がウエイトごとに1つのファイルになっているのに対し，明朝体は1つのファイルに複数ウエイトを内包している．そのため，ウエイトに対応したフォントの番号の指定が必要となる．
+ただし，これらの設定は自分で書かずとも\texttt{pxchfon-extras.def} \cite{PXex}というファイル
+\footnote{\texttt{pxchfon-extras.def}は，ディストリビューションに含まれないため，別にダウンロードする必要がある．}を{\TeX}のディレクトリの中に置いておけば，pxchfonパッケージのオプションで，
+\texttt{[hiragino-highsierra-pron]}と指定するだけで同じ設定が自動で読み込まれる．
+情報工学科の設定スクリプトでは，\texttt{pxchfon-extras.def}がディレクトリにコピーされる．
+\begin{figure}[b]
+\begin{itembox}[l]{\gtbf{TLContrib}}
+\small\sffamily\mgfamily
+{\TeX}は書籍の付録としてDVDやUSBメモリなどに収録して配布されることもあり，利用や改変，商用再配布にライセンス上制約がないものだけがディストリビューションに含められている．
+ところが，パッケージの一部のファイルには「商用・非商用を問わず無料で利用可能だが，商用再配布を禁じる」など，ライセンス上含められないものがある．
+そのようなファイルや拡張パッケージを配布する目的でTLContrib（Contributed packages for TeX Live）というディストリビューション\cite{tlcontrib}が存在する．情報工学科の設定スクリプトでもTLContribから一部のファイルをダウンロードしている．
+\end{itembox}
+\end{figure}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black,breakable=true]
+\begin{lstlisting}
+\setlightminchofont[0]{HiraginoSerif.ttc}	% \mcfamily\ltseries W3を指定
+\setmediumminchofont[0]{HiraginoSerif.ttc} 	% \mcfamily\mdseries W3を指定
+\setboldminchofont[2]{HiraginoSerif.ttc}	% \mcfamily\bfseries W6を指定
+\setmediumgothicfont{HiraginoSans-W3.ttc}	% \gtfamily\mdseries
+\setboldgothicfont{HiraginoSans-W6.ttc}		% \gtfamily\bfseries
+\setxboldgothicfont{HiraginoSans-W8.ttc}	% \gtfamily\ebseries
+\setmarugothicfont{HiraginoSansR-W4.ttc}	% \mgfamily
+\end{lstlisting}
+\end{tcolorbox}
+
+なお，2節にも書いたが，日本語対応のPSプリンタは，当初2書体しか使用できなかったため，文章中で文字を{\gtfamily 強調}するときなどは書体を変える以外の選択肢がなかった．
+5書体になり太字が使えるようになっても，明朝体での{\mcfamily\bfseries 強調}はゴシック体での{\gtfamily\bfseries 強調}に比べ，インパクトに欠けるため，現在でも日本語の文章では強調するときに，ゴシック体を用いることが一般的である．因みに，欧文の文章での強調はイタリック体にするのが一般的である．したがって，文字を強調するコマンド\verb|\emph{}|を使うと和文は細ゴシック体，欧文はイタリック体になる．
+
+ただし，日本語の技術文章では，英数字と日本語が混在する用語や文章を書くことが多いため，
+\verb|\emph{}|を使うことはほとんどない．
+また，\verb|\textgt|コマンドで強調するのも，ゴシック体とセリフ体が混ざってしまいバランスが悪い．
+例えば，pxchfonパッケージを強調したいとき，{\gtfamily\bfseries pxchfonパッケージ}とするよりも{\sffamily\bfseries pxchfonパッケージ}とする方が統一感があるし，統計学における
+{\gtfamily\bfseries 68-95-99.7則}は，{\sffamily\bfseries 68-95-99.7則}とする方が
+バランスが良い．これは，節見出しなどの節番号と見出しについても同じことが言える．
+このことは気に留めておくべきである\footnote{
+初期の{p\LaTeX}の時代には，ゴシック体のコマンドで，英数字も欧文フォントのサンセリフ体に
+切り替える設定が良く使われたが，現在は今回採用しているパッケージのコマンドで簡単にできる．}．
+
+\subsubsection{独自のコマンド}
+
+プリアンブルには，独自のコマンドを定義しておくこともできる．
+新しいコマンドは以下の構文で作成できる．
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{lstlisting}
+\newcommand{\関数名}[引数の数]{関数の定義}
+\end{lstlisting}
+\end{tcolorbox}
+\noindent
+引数は\verb|#|番号を用いて，定義の中で記述する．
+
+例えば，書体の指定などは組み合わせると長くなりがちなので，
+ここでは例として以下の2つのコマンドを定義し，本稿でも使用している．
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{lstlisting}
+\newcommand{\mcbf}[1]{{\mcfamily\bfseries #1}} %\mcbfという命令型コマンドを定義
+\newcommand{\gtbf}[1]{{\sffamily\bfseries #1}} %\gtbfという命令型コマンドを定義
+\end{lstlisting}
+\end{tcolorbox}
+\noindent
+これらはそれぞれ，中太字明朝体，中太ゴシック体
+（英数字は対応する欧文フォントのボールド体を使用）を指定する
+コマンドになっている．また，既存のコマンドの定義を変更するには，\verb|\renewcommand|を使う．
+
+\subsubsection{タイトルの出力}
+
+作成する文書にタイトルを書く場合，入力はプリアンブル内で，
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black]
+\begin{lstlisting}
+\title{タイトルの中身}
+\end{lstlisting}
+\end{tcolorbox}
+\noindent
+と書き，\verb|\begin{document}|以降に\verb|\maketitle|と記述すれば，「タイトルの中身」がタイトルとして出力される．同様に
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black,breakable=true]
+\begin{lstlisting}
+\title{タイトルの中身}
+\author{著者名}
+\date{日付}
+\end{lstlisting}
+\end{tcolorbox}
+\noindent 
+と記述すると，「タイトルの中身」の下に「著者名」と「日付」が出力される．日付を出力したくない場合は，引数を空にする（\verb|\date{}|）．また，引数に\verb|\today|と入力するとコンパイルした日付が出力される．
+
+
+\subsection{ドキュメント環境}
+
+プリアンブル部分が書き終わると，あとは本文を書いていくことになる．
+\verb|\begin{document}|と\verb|\end{document}|の間で文章を記述する．
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black,breakable=true]
+\begin{lstlisting}
+\begin{document}
+\maketitle      % タイトルを入力している場合
+
+% 以降で本文を書いてく．
+%\section{はじめに}
+\input{intro}   % 別のファイルに記述して，ファイルを読み込むことも可能．
+\input{sect2}
+\input{sect3}
+\input{sect4}
+\input{biblio}
+\appendix       % 付録をつけるとき
+\input{apdx}
+\end{document}
+\end{lstlisting}
+\end{tcolorbox}
+
+なお，(u){p\LaTeX}では外部のファイルの読み込みも可能である．
+例えば，節ごとの文章を別のファイル（拡張子は\texttt{.tex}）に作成して，
+ソースファイル中でそれらを読み込むことができる．
+また，タイトルページを別にするよう指示があった場合などは，\verb|\maketitle|の代わりに
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!70!black,breakable=true]
+\begin{lstlisting}
+\begin{titlepage}
+\vspace*{3cm}
+\centering
+\Huge\textsf{Title of Report}\\[2cm] % 改行の後，2cm空ける
+\Large\textsf{情報工学科1年}\\
+\Large\textsf{25G1000}\\[5pt]        % 改行の後，5pt空ける
+\huge\textsf{工大 太郎}\\[1cm]       % 改行の後，1cm空ける
+\Large\textsf{\today}
+\end{titlepage}
+\clearpage
+\end{lstlisting}
+\end{tcolorbox}
+\noindent
+などと書けば独立したタイトルページが作られる．

@@ -1,0 +1,254 @@
+\section{書体の変更}
+
+\subsection{書体変更のコマンド}
+
+{\LaTeX}において，フォントの書体はファミリー，シリーズ，シェイプの3つの要素で表せる．
+ファミリーは，デザイン上で同一の系統に属する書体の集合であり，欧文では，ローマン体（セリフ体），サンセリフ体，タイプライタ体の3種，和文では，明朝体，ゴシック体の2種（jlreq-deluxeパッケージを使用する場合は，丸ゴシック体が加わり3種）が定義される．シリーズは，文字のウエイトによって分類され，{\TeX}では通常ミディアムとボールドの2種類が定義される．シェイプは字形の分類であるが，和文ではファミリーを変えることが一般的なので，シェイプは定義されていない．
+\begin{screen}
+\small\sffamily
+これらは，あくまでコマンド上の分類であり，実際に使用されるフォントの書体は独立に設定できることに注意する．例えば，セリフ体のコマンドにサンセリフ体のフォントを割り当てると，標準書体でサンセリフ体のフォントが使用されるし，ボールド体のコマンドに別のウエイトを割り当てることも可能である．
+\end{screen}
+
+\begin{figure}[b]
+\begin{itembox}[l]{NFSS（New Font Selection Scheme）}
+\small\sffamily\mgfamily
+{\LaTeXe}より導入されたフォント管理の仕組み（NFSS: New Font Selection Scheme）では，フォントが，encoding/family/series/shape(/size)で管理される．
+例えば，コンパイルの最中に出てくるワーニングメッセージには，
+次のようなフォント関連のものがある．
+\begin{verbatim}
+LaTeX Font Warning: Font shape `JY2/hmc/b/n' undefined
+(Font)    　　　　　　using `JY2/hmc/bx/n' instead on input line 123.
+\end{verbatim}
+これは，ファイルの123行目の文について，JY2エンコーディングをもつヒラギノ明朝（hmc）のボールドシリーズ（b）の立体シェイプ（n）が定義されていないので，エキストラボールドシリーズ（bx）の立体シェイプ（n）で定義されているフォントを代用する，という意味である．
+\end{itembox}
+\end{figure}
+
+ファミリーは，何も指定していない状態では，標準設定（欧文はセリフ体，和文は明朝体）になるが，
+その状態から他のファミリーに切り替えるコマンドには，命令型，宣言型，環境型の3種類がある．
+例えば，サンセリフ体を指定するには，
+\begin{itemize}
+\item \verb|\textsf{Sans Serif}|（\gtbf{命令型}: 引数部分が有効範囲）
+\item \verb|{\sffamily Sans Serif}|（\gtbf{宣言型}: \{ \}に囲まれた範囲が有効範囲），
+\item \verb|\begin{sffamily} Sans Serif \end{sffamily}|（\gtbf{環境型}: \textbackslash begin と\textbackslash endの間が有効範囲）
+\end{itemize}
+の3通りの方法がある．
+{\TeX}はアメリカ発祥なので，元々標準では欧文用のコマンドしか存在しないが，
+(u){p\LaTeX}では，和文用のコマンドが追加されている．表\ref{fami}にファミリー指定方法を示す．
+下の3つは和文フォント用のコマンドであり，jlreq-deluxeパッケージを使う場合は，丸ゴシック体用のコマンドも使える．
+また，欧文フォントにSTIX Twoしか指定していない場合など，指定したファミリーがフォントにない場合には，デフォルトのCMフォントが代用される．
+\begin{table}[t]
+\caption{ファミリーの指定方法}\label{fami}
+\begin{tabular}{l||l|l|l}\hline
+ファミリー & 命令型 & 宣言型 & 出力\\ \hline
+セリフ体（標準）& \verb|\textrm{Roman}| & \verb|{\rmfamily Roman}| &\textrm{Roman} \\
+サンセリフ体 & \verb|\textsf{Sans Serif}| & \verb|{\sffamily Sans Serif}|  &\textsf{Sans Serif}\\
+タイプライタ体 & \verb|\texttt{Typewriter}| & \verb|{\ttfamily Typewriter}|  &\texttt{Typewriter}\\\hline
+明朝体（標準）& \verb|\textmc{明朝体}| & \verb|{\mcfamily 明朝体}| & \textmc{明朝体}\\
+ゴシック体 & \verb|\textgt{ゴシック体}| & \verb|{\gtfamily ゴシック体}| & \textgt{ゴシック体}\\ \hline
+丸ゴシック体& \verb|\textmg{丸ゴシック体}| & \verb|{\mgfamily 丸ゴシック体}| & \textmg{丸ゴシック体}\\\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[b]
+\begin{itembox}[l]{\gtbf{本文のフォント}}
+\small\sffamily\mgfamily
+我々は文章を読むとき，文字を1文字ずつ見ているのではなく，数文字ごとのかたまりで捉えている．文字を捉えるときに視線を一瞬止めることを視点停留と呼び，次のかたまりに視線を動かすことを視点飛躍と呼ぶ．つまり停留と飛躍を繰り返すことにより文章を読み理解している．このとき，停留ポイントの目安となるのが句読点や漢字となる．
+書籍や専門書の本文において主に明朝系の書体が利用されるのは，明朝体は仮名と漢字のデザインが根本的に異なるため，停留のポイントが見つけやすく，長文を読んでも疲れにくいことが理由にある．
+逆にゴシック体は仮名と漢字が統一されたデザインの場合が多く，本文での利用としては文面の強弱が識別しづらいといえる．ただし，スクリーンやディスプレイで見るときは，線の細い明朝体が見づらい場合もある．
+\end{itembox}
+\end{figure}
+
+シリーズの指定方法も命令型，宣言型，環境型の3種類が使えるが，フォントがもたないウエイトを指定した場合は無視される（ワーニングメッセージが表示される）．表\ref{seri}にシリーズの指定方法を示す．
+エクストラボールドは，pxchfon パッケージを使用すると使える和文フォント用のコマンドであるが，用意されているのは宣言型のコマンドのみである．
+なお，ここでのミディアムとかボールドというのは，あくまで{\TeX}のコマンド名の話であり，使用されるフォントのウエイトとは異なることに注意する．ミディアムがフォントのどのウエイトに対応するかは設定による．通常，{\TeX}におけるミディアムは，フォントにおけるレギュラーウエイトが割り当てられている．
+\begin{table}[t]
+\caption{シリーズの指定方法}
+\label{seri}
+\centering
+\begin{tabular}{l||l|l|l}\hline
+シリーズ & 命令型 & 宣言型 & 出力\\ \hline
+ミディアム（標準）&\verb|\textmd{Medium}|& \verb|{\mdseries Medium}| &\textmd{\textrm{Medium}}\\
+ボールド&\verb|\textbf{Boldface}| & \verb|{\bfseries Boldface}| & \textbf{\textrm{Boldface}}\\
+エクストラボールド&\verb|---| & \verb|{\gtfamily\ebseries 特太}| & {\gtfamily\ebseries 特太}\\ \hline
+\end{tabular}
+\end{table}
+
+シェイプは主に欧文フォントに使うコマンドであり，和文フォント用のコマンドはない（和文に使うとワーニングが出て無視される）．ここでイタリック体と斜体（スラント体あるいはオブリーク体とも呼ばれる）は別の字体であることに注意する．
+イタリックは手書き文字を元にして専用にデザインされた書体であるのに対し，斜体は立体を傾けただけの字体である．フォントによってどちらかしか用意されていない場合には，ある方で代用される．STIX Two Textはイタリック体はあっても，斜体はないため
+斜体でもイタリックが表示されている．表\ref{shape}にシェイプの指定方法を示す．
+\begin{table}[t]
+\caption{シェイプの指定方法}\label{shape}
+\centering
+\begin{tabular}{l||l|l|l}\hline
+シェイプ& 命令型 & 宣言型 & 出力\\ \hline
+立体（標準）&{\small\verb|\textup{Upshape}|} & {\small\verb|{\upshape Upshape}|} & \textup{\textrm{Upshape}}\\
+イタリック体&{\small\verb|\textit{Italic}|} & {\small\verb|{\itshape Italic}|} & \textit{\textrm{Italic}}\\
+スモールキャップ体&{\small\verb|\textsc{Small Capital}|} & {\small\verb|{\scshape Small Capital}|} &\textsc{\textrm{Small Capital}}\\
+斜体 & {\small\verb|\textsl{Slanted}|} & {\small\verb|{\slshape Slanted}|} & \color{red}{\textsl{\textrm{Slanted}}}\\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{コマンド使用例}
+
+ファミリー，シリーズ，シェイプのコマンドはそれぞれ組み合わせて使うことで，さまざまな書体を実現する．ところで，和文と欧文が混在する環境ではコマンドの振る舞いに差が生じる．
+ここでは，それぞれ出力がどうなるかを見ていく．まずは欧文用のファミリーとシリーズを組み合わせた命令型コマンドを使った入力と出力の例を示す．
+
+\begin{tcolorbox}[title=\gtbf{命令型欧文コマンド使用例},colback=blue!5!white,colframe=blue!70!black,enhanced,breakable=true]
+\begin{lstlisting}
+\textrm{1. This is a regular Serif font. これは細明朝体です．}
+\textrm{\textbf{2. This is a bold Serif font. これは中太明朝体です．}}
+\textsf{3. This is a regular Sans Serif font. これは細ゴシック体です．}
+\textsf{\textbf{4. This is a bold Sans Serif font. これは中太ゴシック体です．}}
+\texttt{5. This is a regular Typewriter font. しかし，これは細ゴシック体です．}
+\texttt{\textbf{6. This is a bold Typewriter font. しかし，これは細ゴシック体です．}}
+\end{lstlisting}
+\begin{tcolorbox}[title=\gtbf{出力},colback=yellow!15!white,colframe=blue!75!black]
+\textrm{1. This is a regular Serif font. これは細明朝体です．}\\
+\textrm{\textbf{2. This is a bold Serif font. これは中太明朝体です．}}\\
+\textsf{3. This is a regular Sans Serif font. これは細ゴシック体です．}\\
+\textsf{\textbf{4. This is a bold Sans Serif font. これは中太ゴシック体です．}}\\
+\texttt{5. This is a regular Typewriter font. しかし，これは細{\color{red}ゴシック体}です．}\\
+\texttt{\textbf{6. This is a bold Typewriter font. しかし，これは中太{\color{red}ゴシック体}です．}}
+\end{tcolorbox}
+\end{tcolorbox}
+
+ローマン体，サンセリフ体はそれぞれ，明朝体，ゴシック体に対応しておりボールド体も問題なく表示されている．また，和文にはタイプライタ体相当の文字がないので，最後の2つは通常は指定しない使い方ではあるが，明朝ではなくゴシック体で代用されることは知っておいて良いであろう．
+次に和文用のファミリーとシリーズを組み合わせた命令型コマンドを使った場合の入力と出力の例を示す．
+\begin{tcolorbox}[title=\gtbf{命令型和文コマンド使用例},colback=blue!5!white,colframe=blue!70!black,enhanced,breakable=true]
+\begin{lstlisting}
+\textmc{\textmd{1. これは細明朝体です．This is a regular Serif font.}}
+\textmc{\textbf{2. これは中太明朝体です．This is a bold Serif font.}}
+\textgt{\textmd{3. これは細ゴシック体です．However, this is a regular Serif font.}}
+\textgt{\textbf{4. これは中太ゴシック体です．However, this is a bold Serif font.}}
+\textmg{\textmd{5. これは中細丸ゴシック体です．However, this is a regular Serif font.}}
+\textmg{\textbf{6. これも中細丸ゴシック体です．However, this is a bold Serif font.}}
+\end{lstlisting}
+\begin{tcolorbox}[title=\gtbf{出力},colback=yellow!15!white,colframe=blue!75!black]
+\textmc{\textmd{1. これは細明朝体です．This is a regular Serif font.}}\\
+\textmc{\textbf{2. これは中太明朝体です．This is a bold Serif font.}}\\
+\textgt{\textmd{3. これは細ゴシック体です．However, this is a regular {\color{red}Serif} font.}}\\
+\textgt{\textbf{4. これは中太ゴシック体です．However, this is a bold {\color{red}Serif} font.}}\\
+\textmg{\textmd{5. これは中細丸ゴシック体です．However, this is a regular {\color{red}Serif} font.}}\\
+\textmg{\textbf{6. これも{\color{red}中細}丸ゴシック体です．However, this is a bold {\color{red}Serif} font.}}
+\end{tcolorbox}
+\end{tcolorbox}
+この場合，全ての欧文部分がローマン（セリフ）体で表示されている．これは欧文の標準がセリフ体であるからである．つまり，和文用のファミリーコマンドは欧文には適用されない（シリーズコマンドは適用される）ことを意味する．
+元々，欧文環境には丸ゴシック体相当の書体コマンドがないため，丸ゴシック体の指定では自動的に代替フォントとして，標準のセリフ体が使われる．しかし，ゴシック体の指定もセリフ体になるため，和文に英数字が含まれる場合には注意が必要である．
+
+続いて宣言型コマンドの例を見ていく．結果は命令型コマンドを用いた場合と同様となるので，説明は省略する．なお，コマンドをどのタイプで書くのかに特にルールはなく個人の好みで構わない．
+命令型はコマンドを組み合わせると中カッコが増えるので，対応を間違えやすい．宣言型は入力文字数が多くなりがちといった違いがある．短い単語なら命令型，長めの文章なら宣言型等，自分なりの入力のし易さで決めればよい．
+\begin{tcolorbox}[title=\gtbf{宣言型欧文コマンド使用例},colback=blue!5!white,colframe=blue!70!black,enhanced,breakable=true]
+\begin{lstlisting}
+{\rmfamily\mdseries 1. This is a regular Serif font. これは細明朝体です．}
+{\rmfamily\bfseries 2. This is a bold Serif font. これは中太明朝体です．}
+{\sffamily\mdseries 3. This is a regular Sans Serif font. これは細ゴシック体です．}
+{\sffamily\bfseries 4. This is a bold Sans Serif font. これは中太ゴシック体です．}
+{\ttfamily\mdseries 5. This is a regular Typewriter font. しかし，これは細ゴシック体です．}
+{\ttfamily\bfseries 6. This is a bold Typewriter font. しかし，これは中太ゴシック体です．}
+\end{lstlisting}
+\begin{tcolorbox}[title=\gtbf{出力},colback=yellow!15!white,colframe=blue!75!black]
+{\rmfamily\mdseries 1. This is a regular Serif font. これは細明朝体です．}\\
+{\rmfamily\bfseries 2. This is a bold Serif font. これは中太明朝体です．}\\
+{\sffamily\mdseries 3. This is a regular Sans Serif font. これは細ゴシック体です．}\\
+{\sffamily\bfseries 4. This is a bold Sans Serif font. これは中太ゴシック体です．}\\
+{\ttfamily\mdseries 5. This is a regular Typewriter font. しかし，これは細{\color{red}ゴシック体}です．}\\
+{\ttfamily\bfseries 6. This is a bold Typewriter font. しかし，これは中太{\color{red}ゴシック体}です．}
+\end{tcolorbox}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=\gtbf{宣言型和文コマンド入力},colback=blue!5!white,colframe=blue!70!black,enhanced,breakable=true]
+\begin{lstlisting}
+{\mcfamily\mdseries 1. これは細明朝体です．This is a regular Serif font.}
+{\mcfamily\bfseries 2. これは中太明朝体です．This is a bold Serif font.}
+{\mcfamily\ebseries 3. これは中太明朝体です．This is a bold Serif font.}
+{\gtfamily\mdseries 4. これは細ゴシック体です．However, this is a regular Serif font.}
+{\gtfamily\bfseries 5. これは中太ゴシック体です．However, this is a bold Serif font.}
+{\gtfamily\ebseries 6. これは特太ゴシック体です．However, this is a regular Serif font.}
+{\mgfamily\mdseries 7. これは中細丸ゴシック体です．However, this is a regular Serif font.}
+{\mgfamily\bfseries 8. これも中細丸ゴシック体です However, this is a bold Serif font.}
+\end{lstlisting}
+\begin{tcolorbox}[title=\gtbf{出力},colback=yellow!15!white,colframe=blue!75!black]
+{\mcfamily\mdseries 1. これは細明朝体です．This is a regular Serif font.}\\
+{\mcfamily\bfseries 2. これは中太明朝体です．This is a bold Serif font.}\\
+{\mcfamily\ebseries 3. これは中太明朝体です．This is a bold Serif font.}\\
+{\gtfamily\mdseries 4. これは細ゴシック体です．However, this is a regular {\color{red}Serif} font.}\\
+{\gtfamily\bfseries 5. これは中太ゴシック体です．However, this is a bold {\color{red}Serif} font.}\\
+{\gtfamily\ebseries 6. これは特太ゴシック体です．However, this is a regular {\color{red}Serif} font.}\\
+{\mgfamily\mdseries 7. これは中細丸ゴシック体です．However, this is a regular {\color{red}Serif} font.}\\
+{\mgfamily\bfseries 8. これも{\color{red}中細}丸ゴシック体です．However, this is a bold {\color{red}Serif} font.}
+\end{tcolorbox}
+\end{tcolorbox}
+
+続いてシェイプコマンドも組み合わせた例である．和文フォントにはシェイプが存在しないので，欧文フォントのみ示している．
+\begin{tcolorbox}[title=\gtbf{Stix Twoフォントのシェイプ},colback=yellow!15!white,colframe=blue!75!black,enhanced,breakable=true]
+\textrm{1. This text is default Roman.}\\
+\textbf{2. This text is specified as bold Roman.}\\
+\textit{3. This text is specified as Italic.}\\
+\textit{\textbf{4. This text is specified as bold Italic.}}\\
+\textsl{5. This text is specified as slanted/oblique, but appears as {\color{red}Italic}.}\\
+\textsl{\textbf{6. This text is specified as bold slanted/oblique, but appears as bold {\color{red}Italic}.}}\\
+\textsc{7. This text is specified as small capitals.}\\
+\textsc{\textbf{8. This text is specified as bold small capitals.}}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=\gtbf{Robotoフォントのシェイプ},colback=yellow!15!white,colframe=blue!75!black,enhanced,breakable=true]
+\textsf{1. This text is specified as Sans Serif.}\\
+\textsf{\textbf{2. This text is specified as bold Sans Serif.}}\\
+\textsf{\textit{3. This text is specified as Italic, but appears as {\color{red}slanted}.}}\\
+\textsf{\textit{\textbf{4. This text is specified as bold Italic, but appears as bold {\color{red}slanted}.}}}\\
+\textsf{\textsl{5. This text is specified as slanted.}}\\
+\textsf{\textsl{\textbf{6. Thi text is specified as bold slanted.}}}\\
+\textsf{\textsc{7. This text is specified as small capitals.}}\\
+\textsf{\textsc{\textbf{8. This text is specified as bold small capitals.}}}
+\end{tcolorbox}
+
+
+ところで，本稿では，セリフ体にSTIX Two，サンセリフ体にRobotoフォントを使用しているが，
+Robotoフォントは6つのウエイトが使用できる．そこで，それらのウエイトの違いを比較してみる．
+\begin{tcolorbox}[title=\gtbf{Stix TwoとRobotoのウエイトの関係},colback=yellow!15!white,colframe=blue!75!black,enhanced,breakable=true]
+{\rmfamily 1. This is regular Serif. \robotoThin{This is robotoThin Sans Serif.}}\\
+{\rmfamily 2. This is regular Serif. \robotoLight{This is robotoLight Sans Serif.}}\\
+{\rmfamily 3. This is regular Serif. \robotoRegular{This is robotoRegular Sans Serif.}}\\
+{\rmfamily\bfseries 4. This is bold Serif. \robotoMedium{This is robotoMedium Sans Serif.}}\\
+{\rmfamily\bfseries 5. This is bold Serif. \robotoBold{This is robotoBold Sans Serif.}}\\
+{\rmfamily\bfseries 6. This is bold Serif. \robotoBlack{This is robotoBlack Sans Serif.}}
+\end{tcolorbox}
+\noindent
+STIXTwoでは，レギュラーとボールドの2ウエイトのみが使用できるが，Robotoのレギュラーとボールドと比べてもそれほど違いはなく，バランスは取れていると思う．
+
+最後に，STIX Twoの数式用フォントの例である．stix2 パッケージのところでも述べたが，STIX Two Mathにはセリフ体やタイプライタ体が含まれる．そこで，Robotoとの比較も示している．
+\begin{tcolorbox}[title=\gtbf{Stix Two Mathのセリフ体（STIX Two Textとの比較を含む）},colback=yellow!15!white,colframe=blue!75!black,enhanced,breakable=true]
+\(
+\verb|\mathrm|:\mathrm{123 ABCD\neq 456 abcd}\ \ (\robotoBold{STIX Two Text:}\ \textrm{123ABCD $\neq$ 456abcd})\\
+\verb|\mathbf|:\mathbf{123 ABCD\neq 456 abcd}\ \ (\robotoBold{STIX Two Text:}\ \textbf{123ABCD $\neq$ 456abcd})\\
+\verb|\mathit|:\mathit{123 ABCD\neq 456 abcd}\ \ (\robotoBold{STIX Two Text:}\ \textit{123ABCD $\neq$ 456abcd})\\
+\verb|\mathbfit|:\mathbfit{123 ABCD\neq 456 abcd}\ \ (\robotoBold{STIX Two Text:}\ \textit{\textbf{123ABCD $\neq$ 456abcd}})
+\)
+\end{tcolorbox}
+\noindent
+数式中では，変数はイタリック体にするが，数字はイタリック体にしない．したがって，数字の部分にだけ違いが現れている．
+
+\begin{tcolorbox}[title=\gtbf{Stix Two Mathのサンセリフ体（Robotoとの比較を含む）},colback=yellow!15!white,colframe=blue!75!black,enhanced,breakable=true]
+\(
+\verb|\mathsf|:\mathsf{123 ABCD\neq 456 abcd}\ \ (\robotoBold{Roboto:}\ \textsf{123ABCD $\neq$ 456abcd})\\
+\verb|\mathbfsf|:\mathbfsf{123 ABCD\neq 456 abcd}\ \ (\robotoBold{Roboto:}\ \textsf{\textbf{123ABCD $\neq$ 456abcd}})\\
+\verb|\mathsfit|:\mathsfit{123 ABCD\neq 456 abcd}\ \ (\robotoBold{Roboto:}\ \textsf{\textit{123ABCD $\neq$ 456abcd}})\\
+\verb|\mathbfsfit|:\mathbfsfit{123 ABCD\neq 456 abcd}\ \ (\robotoBold{Roboto:}\ \textsf{\textit{\textbf{123ABCD $\neq$ 456abcd}}})\\
+\verb|\mathtt|:\mathtt{123 ABCD\neq 456 abcd}\ \ (\robotoBold{Roboto:}\ \texttt{123ABCD $\neq$ 456abcd})
+\)
+\end{tcolorbox}
+\noindent 
+イタリック体の数字の部分に違いが現れるのはセリフ体と同様である．
+
+\begin{tcolorbox}[title=\gtbf{Stix Two Mathのその他のフォント},colback=yellow!15!white,colframe=blue!75!black,enhanced,breakable=true]
+\(
+\verb|\mathbb|:\mathbb{123 ABCD\neq 456 abcd}\ \ \ \textrm{（Blackboard-Bold: 黒板文字）}\\
+\verb|\mathscr|:\mathscr{123 ABCD\neq 456 abcd}\ \ \ \textrm{（Script: 筆記体）}\\
+\verb|\mathbfscr|: \mathbfscr{123 ABCD\neq 456 abcd}\\
+\verb|\mathcal|:\mathcal{123 ABCD\neq 456 abcd}\ \ \ \textrm{（Calligraphy: 装飾文字の6が未定義でワーニングが出る）}\\
+\verb|\mathfrak|:\mathfrak{123 ABCD\neq 456 abcd}\ \ \ \textrm{（Fraktur: ドイツ文字）}\\
+\verb|\mathbffrak|:\mathbffrak{123 ABCD\neq 456 abcd}
+\)
+\end{tcolorbox}
+

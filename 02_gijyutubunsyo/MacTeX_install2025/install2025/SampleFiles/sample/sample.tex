@@ -1,0 +1,78 @@
+\documentclass[uplatex,dvipdfmx]{jlreq}
+
+\usepackage{jlreq-deluxe}
+\usepackage[noalphabet,hiragino-highsierra-pron]{pxchfon}
+\usepackage[T1,LGR]{fontenc}
+\usepackage{stix2}
+\usepackage{roboto}
+\usepackage[scale=0.95]{roboto-mono}
+
+\usepackage[fleqn,tbtags]{mathtools} % 数式関連 (w/ amsmath)
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{pxrubrica} 	% ルビを振るのに採用
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,skins,breakable} % tcolorboxのオプション
+\usepackage{ascmac} 	%screen/itembox/shadebox環境
+
+\usepackage{listings,plistings}
+\lstset{%
+aboveskip=0pt,
+belowskip=0pt,
+language={[LaTeX]TeX}, 
+morekeywords={tcbuselibrary, hypersetup, setlightminchofont, 
+setmediumminchofont, setboldminchofont, setmediumgothicfont, 
+setboldgothicfont, setxboldgothicfont, setmarugothicfont,
+appendix, maketitle, textmc, textgt, textmg, mcfamily,
+gtfamily, mgfamily, ebseries},
+backgroundcolor={},% 
+basicstyle={\small\ttfamily},% 
+keywordstyle=\color{blue}\bfseries,
+commentstyle=\color{red},
+breaklines=true}
+
+\usepackage[dvipdfmx]{hyperref}
+\hypersetup{%
+ bookmarksnumbered=true,%
+ colorlinks=true,%
+ linkcolor=magenta,
+ citecolor=blue,
+ urlcolor=blue}
+\usepackage[dvipdfmx]{pxjahyper} % (u)pLaTeXのときは必要
+\usepackage{hira-stix} 	% ヒラギノフォント＆STIX2 代替フォント定義（Warning回避）
+
+\newcommand{\mcbf}[1]{{\mcfamily\bfseries #1}}
+\newcommand{\gtbf}[1]{{\sffamily\bfseries #1}}
+\newcommand{\sfpi}{{\robotolgr p}}
+
+\title{
+\centering
+\gtbf{情報工学科の{\TeX}の設定とサンプルファイルについてtetetetetetetetet}
+}
+\author{\mgfamily 佐波孝彦}
+\date{\sffamily\small\today}
+
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\begin{document}
+\maketitle
+
+%\begin{titlepage}
+%\vspace*{3cm}
+%\centering
+%\Huge\textsf{Title of Report}\\[2cm]
+%\Large\textsf{情報工学科 1年}\\
+%\Large\textsf{25G1000}\\[5pt]
+%\huge\textsf{工大 太郎}\\[1cm] 
+%\Large\textsf{\today}
+%\end{titlepage}
+%\clearpage
+
+\input{intro}
+\input{sect2}
+\input{sect3}
+\input{sect4}
+\input{sect5}
+\input{biblio}
+\appendix
+\input{apndx}
+\end{document} 

@@ -1,0 +1,43 @@
+\documentclass[uplatex,dvipdfmx]{jlreq}
+
+\usepackage{jlreq-deluxe}
+\usepackage[noalphabet,hiragino-highsierra-pron]{pxchfon}
+\usepackage[T1,LGR]{fontenc}
+\usepackage{stix2}
+\usepackage{roboto}
+\usepackage[scale=0.95]{roboto-mono}
+
+\usepackage[fleqn,tbtags]{mathtools} % 数式関連 (w/ amsmath)
+\usepackage[table,dvipdfmx]{xcolor}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{ascmac} %screen/itembox/shadebox環境が使用できる．
+\usepackage{hira-stix} % ヒラギノフォント＆STIX2 代替フォント定義（Warning回避）
+
+\usepackage[dvipdfmx]{hyperref}
+\hypersetup{%
+ bookmarksnumbered=true,%
+ colorlinks=true,%
+ linkcolor=magenta,
+ citecolor=blue,
+ urlcolor=blue}
+\usepackage[dvipdfmx]{pxjahyper} % (u)pLaTeXのときは必要
+
+\newcommand{\mcbf}[1]{{\mcfamily\bfseries #1}}
+\newcommand{\gtbf}[1]{{\sffamily\bfseries #1}}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\title{\gtbf{レポートタイトル}}
+\author{\mgfamily 工大 太郎}
+\date{\sffamily\small\today}
+
+\begin{document}
+\maketitle
+
+\input{intro}
+%\input{sect2}
+%\input{sect3}
+\input{conc}
+\input{biblio}
+%\appendix
+%\input{apndx}
+\end{document} 
