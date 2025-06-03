@@ -1,0 +1,1 @@
+SELECT id FROM student23 WHERE Club == '囲碁将棋部';
