@@ -1,0 +1,112 @@
+\documentclass[uplatex]{jsarticle}
+
+\usepackage{amsmath}
+\usepackage[dvipdfmx]{graphicx}
+
+\setcounter{tocdepth}{3}
+\usepackage{float}
+\usepackage{moreverb}
+\usepackage{lscape}
+%\pagestyle{empty}
+%\usepackage{wrapfig}
+%\usepackage{url}
+%\usepackage{EasyLayout}
+
+\usepackage{ascmac}
+%\usepackage{fancybx}
+
+%\pagestyle{myheadings}
+
+
+\begin{document}
+
+
+\title{第8回目の課題}
+\author{25G1065 塩澤匠生}
+%\date{2015年11月13日}
+\maketitle
+
+
+\section{はじめに}
+習志野市に10店舗を展開するCIT スーパーは売上高の減少に悩まされている．
+そこで，この原因についての調査を行い，最も効率よく売上高減少を防止できる策を考える．
+
+
+\section{手法}
+調査のために，CITスーパーを統括するマネージャーは図\ref{fig:anket}に示すアンケートを作成し，実施した．
+接客と品揃えと立地についての満足度を5段階で評価してもらいう形式で実施し，表\ref{table:anket_result}に示すような結果を得られた．
+この結果から売上高と相関のある項目を見つけて，その項目を改善することで売上高の減少を防止することを目指す．
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{anket.png}
+    \caption{実施したアンケート}
+    \label{fig:anket}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{実施したアンケートの結果}
+    \label{table:anket_result}
+    \begin{tabular}{ccccc}
+        \hline
+        店舗 & 1. 接客スコア & 2. 品揃えスコア & 3. 立地スコア & 売上高 (億円) \\\\ \hline
+        A & 3.42 & 4.03 & 2.22 & 305.29 \\\\ \hline
+        B & 4.49 & 4.07 & 1.84 & 281.99 \\\\ \hline
+        C & 4.71 & 2.54 & 4.76 & 382.03 \\\\ \hline
+        D & 0.39 & 3.11 & 3.62 & 346.11 \\\\ \hline
+        E & 2.14 & 1.59 & 2.81 & 322.68 \\\\ \hline
+        F & 4.67 & 4.63 & 1.63 & 277.73 \\\\ \hline
+        G & 4.92 & 2.90 & 4.68 & 372.33 \\\\ \hline
+        H & 4.13 & 2.85 & 2.69 & 314.68 \\\\ \hline
+        I & 0.61 & 4.61 & 4.38 & 365.65 \\\\ \hline
+        J & 3.78 & 3.10 & 4.28 & 357.50 \\\\ \hline
+    \end{tabular}
+\end{table}
+
+\section{結果}
+アンケートの結果をもとに，売上高と各スコアとの相関を調べた結果，図\ref{fig:correlation}に示すような結果が得られた．
+立地スコアと売上高には$r=0.99$の強い相関が見られるということがわかった．
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{graph/csv_graph.png}
+    \caption{売上高と各項目の相関}
+    \label{fig:correlation}
+\end{figure}
+
+
+\section{おわりに}
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
