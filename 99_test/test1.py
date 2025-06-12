@@ -1,0 +1,1 @@
+input.set_accelerometer_range(AccelerometerRange.OneG)

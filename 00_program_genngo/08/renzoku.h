@@ -1,0 +1,3 @@
+
+void renzoku(int number);
+

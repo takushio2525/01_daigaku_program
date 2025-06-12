@@ -1,0 +1,100 @@
+\documentclass[uplatex,dvipdfmx]{jsarticle}
+
+\usepackage[uplatex,deluxe]{otf} % UTF
+\usepackage[noalphabet]{pxchfon} % must be after otf package
+\usepackage{stix2} %欧文＆数式フォント
+\usepackage[fleqn,tbtags]{mathtools} % 数式関連 (w/ amsmath)
+\usepackage{hira-stix} % ヒラギノフォント＆STIX2 フォント代替定義（Warning回避）
+
+\begin{document}
+
+\title{モビリティレポート}
+\author{25G1065 塩澤匠生}
+\date{2025年6月11日}
+\maketitle
+\section{はじめに}
+まず，社会的背景として自転車の単独事故は年5497件発生していて，その割合は年々増加している
+というものがある\cite{jikokensuu}．
+単独事故の割合は，年々増加しているというものがある．そして，
+単独事故の原因の内7割が転倒事故であるというものがある\cite{tandokuWariai}．
+
+\subsection{社会的背景}
+こんな感じで文献引用する\cite{ref:nobukawa2023,ref:nobukawa2023_2}．
+
+\subsection{問題点}
+
+ここで，車の単独事故の原因の内訳と比較してみると車の単独事故の内転倒(横転)事故は1\%
+であることから，自転車は乗り物の性質上転倒事故が発生するという問題があると考えることができる．
+
+
+
+%一般的な社会的背景を記述したパラグラフを複数配置, パラグラフの終わりは\parを入れる。
+%最終パラグラフにはアイデアを記述する．
+
+こんな感じで文献引用する\cite{ref:nobukawa2023,ref:nobukawa2023_2}．
+
+\subsection{目的}
+こんな感じで文献引用する\cite{ref:nobukawa2023,ref:nobukawa2023_2}．
+
+\section{解決策としての提案手法}
+%アイデアを実現する概要図を入れてその内容を説明する．
+必要に合わせて，subsectionにわけて図を図\ref{fig:problem}や表\ref{table:presentation}
+を引用しつつ説明する．
+自転車の性質上，転倒事故が発生しやすいという問題に対して我々は自転車姿勢制御モジュールというものを
+提案する．自転車姿勢制御モジュールの概念図を以下図\ref{fig:moduleGainenn}に示す
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/moduleGainenn.png}
+    \caption{自転車姿勢制御モジュールの概念図}
+    \label{fig:moduleGainenn}
+\end{figure}
+
+まず，先行研究として，JAXAが開発した超小型三軸姿勢制御モジュールというものがある．
+このモジュールは人工衛星の小型化を図るために作られたものでサイズは$10×10×10 {cm}^3$である．
+
+
+
+\begin{table}[h]
+  \centering
+  \caption{表のテンプレート}
+  \label{table:presentation}
+  \begin{tabular}{cl}
+\hline
+項目 & 内容 \\\hline \hline
+1 & 社会的背景・問題点・主張 \\ \hline
+2 & 解決策としての提案手法\\ \hline
+3 & 提案手法の実現可能性の評価と妥当性の検証\\ \hline
+  \end{tabular}  
+\end{table}
+
+\begin{figure}[h]
+\centering
+%\vspace{\baselineskip}
+%\vspace{-1.5\baselineskip}
+ \centering
+\includegraphics[width=10cm]{./Figs/idea.pdf}
+%\vspace{\baselineskip}
+%\vspace{-1.5\baselineskip}
+\caption{図のテンプレート．}
+%\vspace{-1.0\baselineskip}
+\label{fig:problem}
+\end{figure}
+
+
+\section{提案手法の実現可能性の評価と妥当性の検証}
+%
+
+\section{おわりに}
+%全体のまとめを簡潔に記述して，結論を述べる．
+
+
+
+
+\begin{thebibliography}{9}
+\bibitem{ref:nobukawa2023} 礒川悌次郎, \& 信川創. (2023). 脳・神経系における機能創発の解明を目指した数理モデリングとデータ駆動分析―局所神経回路から大域的全脳レベルまで―. 計測と制御, 62(10), 587-592.
+
+\bibitem{ref:nobukawa2023_2}  信川創. "ヒトの認知行動を推定するアイマーカーの脳内メカニズム." 体育の科学, 73.10 (2023): 658-662.
+\end{thebibliography}
+
+\end{document} 
