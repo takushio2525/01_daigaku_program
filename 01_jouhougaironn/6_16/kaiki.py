@@ -53,6 +53,9 @@ for i in range(len(data_list)):
     sse += (data_list[i][1]-risou[i][1])**2
 
 r2 = ssr/sst
+print("sst=" + str(sst))
+print("ssr=" + str(ssr))
+print("sse=" + str(sse))
 print("r^2=" + str(r2))
 
 
