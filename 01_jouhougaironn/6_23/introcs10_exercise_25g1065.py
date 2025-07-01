@@ -24,62 +24,67 @@ Original file is located at
 ################の箇所を埋めていきます。
 """
 
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+scriptDir = os.path.dirname(os.path.abspath(__file__))
+
 
 class SimpleRegression():
-  # コンストラクタを実装
-  def __init__(self, x, y):
-    # x, yデータを格納
-    self.x = x
-    self.y = y
+    # コンストラクタを実装
+    def __init__(self, x, y):
+        # x, yデータを格納
+        self.x = x
+        self.y = y
 
-    # xとyの平均値を計算して，x_mnとy_mnに格納しておく
-    self.x_mn = sum(self.x) / len(self.x)
-    self.y_mn = sum(self.y) / len(self.y)
+        # xとyの平均値を計算して，x_mnとy_mnに格納しておく
+        self.x_mn = sum(self.x) / len(self.x)
+        self.y_mn = sum(self.y) / len(self.y)
 
-    # x, yの各データと平均値との差分をx_diffおよびy_diffに格納しておく
-    self.x_diff = self.x - self.x_mn
-    self.y_diff = self.y - self.y_mn
+        # x, yの各データと平均値との差分をx_diffおよびy_diffに格納しておく
+        self.x_diff = self.x - self.x_mn
+        self.y_diff = self.y - self.y_mn
 
-    # hatb1, hatb0 を0で初期化
-    self.hatb1 = 0
-    self.hatb0 = 0
+        # hatb1, hatb0 を0で初期化
+        self.hatb1 = 0
+        self.hatb0 = 0
 
+    # 回帰係数を推定するメソッドを実装
 
-  # 回帰係数を推定するメソッドを実装
-  def estRegCoeff(self):
-    # 回帰係数hatb1の推定
-    self.hatb1 = np.sum(self.x_diff * self.y_diff) / np.sum(self.x_diff ** 2)
-    # 回帰係数hatb0の推定
-    self.hatb0 = self.y_mn - self.hatb1 * self.x_mn
-    return([self.hatb0, self.hatb1])
+    def estRegCoeff(self):
+        # 回帰係数hatb1の推定
+        self.hatb1 = np.sum(self.x_diff * self.y_diff) / \
+            np.sum(self.x_diff ** 2)
+        # 回帰係数hatb0の推定
+        self.hatb0 = self.y_mn - self.hatb1 * self.x_mn
+        return ([self.hatb0, self.hatb1])
 
-  # 予測値を計算するメソッドを実装
-  def predict(self, x):
-    # 推定した回帰係数を使用して，引数で受け取った値xの予測値を求める
-    haty = self.hatb0 + self.hatb1 * x
-    return(haty)
+    # 予測値を計算するメソッドを実装
+    def predict(self, x):
+        # 推定した回帰係数を使用して，引数で受け取った値xの予測値を求める
+        haty = self.hatb0 + self.hatb1 * x
+        return (haty)
 
-  #　決定係数を計算するメソッドを実装
-  def calcCoeffDet(self):
-    # predictメソッドを使って保持されているデータxの予測値hatyを求める
-    haty = self.predict(self.x)
-    # SSR, SSE, SSTの計算
-    SSR = np.sum((haty - self.y_mn) ** 2)
-    SSE = np.sum((self.y - haty) ** 2)
-    SST = np.sum((self.y - self.y_mn) ** 2)
-    #　R2の計算
-    R2 = SSR / SST
-    return([SSR, SSE, SST, R2])
+    # 　決定係数を計算するメソッドを実装
+    def calcCoeffDet(self):
+        # predictメソッドを使って保持されているデータxの予測値hatyを求める
+        haty = self.predict(self.x)
+        # SSR, SSE, SSTの計算
+        SSR = np.sum((haty - self.y_mn) ** 2)
+        SSE = np.sum((self.y - haty) ** 2)
+        SST = np.sum((self.y - self.y_mn) ** 2)
+        # 　R2の計算
+        R2 = SSR / SST
+        return ([SSR, SSE, SST, R2])
+
 
 """# 演習問題1　血圧と年齢
 ファイルblood.csvには，8名の年齢および血圧（mmHg）のデータが含まれている。年齢を説明変数，血圧を目的変数とした時，以下の問いに答えなさい。
 """
 
-#　ファイルからデータを読み込む
-import pandas as pd
-df = pd.read_csv("blood.csv")
+# 　ファイルからデータを読み込む
+df = pd.read_csv(os.path.join(scriptDir, "blood.csv"))
 age = df["age"].values
 blood = df["blood"].values
 
@@ -92,15 +97,18 @@ print("血圧（mmHg） = ", blood)
 """
 
 # 年齢と血圧を変数として持つインスタンスの生成
-reg_bp = ################
+reg_bp = SimpleRegression(age, blood)
 # 回帰係数の推定
-[hatb0, hatb1] = ################
-print("haty = ", np.round(hatb0,2), " + ", np.round(hatb1,2), "x")
+[hatb0, hatb1] = reg_bp.estRegCoeff()
+print("haty = ", np.round(hatb0, 2), " + ", np.round(hatb1, 2), "x")
 
-"""## 2. 回帰式の決定係数を求めなさい。"""
+"""## 2. 回帰式の決定係数を求めなさい。
 
-#　決定係数を求める
-param = ################
+
+"""
+
+# 　決定係数を求める
+param = reg_bp.calcCoeffDet()
 print("SSR = ", param[0])
 print("SSE = ", param[1])
 print("SST = ", param[2])
@@ -108,16 +116,17 @@ print("R2 = ", param[3])
 
 """## 3. 15歳，50歳，95歳の人の回帰式による血圧を答えなさい。"""
 
-#　年齢を新たな変数に格納
-age_unknown = ################
-#　15歳，50歳，95歳の血圧を予測
-hatBlood = ################
-print("15歳：", np.round(hatBlood[0]), "mmHg, 50歳：", np.round(hatBlood[1]), "mmHg, 95歳：", np.round(hatBlood[2]), "mmHg")
+# 　年齢を新たな変数に格納
+age_unknown = np.array([15, 50, 95])
+# 　15歳，50歳，95歳の血圧を予測
+hatBlood = reg_bp.predict(age_unknown)
+print("15歳：", np.round(hatBlood[0]), "mmHg, 50歳：", np.round(
+    hatBlood[1]), "mmHg, 95歳：", np.round(hatBlood[2]), "mmHg")
 
 """## 4. 年齢と血圧の散布図と推定された回帰直線を描きなさい。また，回帰式から推定した15歳，50歳，95歳の血圧も図に示しなさい。"""
 
 fig, ax = plt.subplots()
-#　軸の設定
+# 　軸の設定
 ax.set_xlim([0, 100])
 ax.set_ylim([60, 200])
 ax.set_xlabel("age", fontsize=14)
@@ -125,36 +134,35 @@ ax.set_ylabel("blood pressure [mmHg]", fontsize=14)
 ax.grid()
 
 # 年齢と血圧の散布図を描く
-################
+ax.scatter(age, blood, color="gray")
 # 15歳，50歳，95歳の年齢と予測した血圧の散布図を描く（色は赤）
-################
+ax.scatter(age_unknown, hatBlood, color="red")
 
 # x軸の値を取得
 xticks = ax.get_xticks()
 # x軸の値に対する予測値を取得
-haty4xticks = ################
+haty4xticks = reg_bp.predict(xticks)
 # 回帰直線を引く
-################
+ax.plot(xticks, haty4xticks, color="blue")
 # グラフのアスペクト比を1:1にする
 ax.set_box_aspect(1)
 
 plt.tight_layout()
 # ファイルに書き出し
-plt.savefig("./blood.pdf",dpi=300)
+plt.savefig(os.path.join(scriptDir, "blood.pdf"), dpi=300)
 
 """## 5. 上記の結果をふまえ，年齢と血圧の関係について説明するとともに，**回帰モデルによって両者の関係を説明することが妥当であるか**検討しなさい。
 
-[5の解答欄]
+[5の解答欄]R2が0.9となっていて年齢と血圧には強い相関があることがわかる．SSTが2700に対してSSEは270となっているため，回帰モデルによって両者の関係を説明することが妥当であると考えられる．
 
 # 演習課題2　ごみの焼却量と二酸化炭素排出量
 ファイルco2.csvには1998年から2021年までの日本の二酸化炭素排出量（百万$t$）とごみの焼却量（万$t$）が含まれている。二酸化炭素排出量を説明変数co2，ごみ焼却量を目的変数incとする時，以下の問いに答えなさい。
 """
 
-#　ファイルからデータを読み込む
-import pandas as pd
-df = ################
-co2 = ################
-inc = ################
+# 　ファイルからデータを読み込む
+df = pd.read_csv(os.path.join(scriptDir, "co2.csv"))
+co2 = df["CO2"].values
+inc = df["inc"].values
 
 print("ごみ焼却量（万t） = ", inc)
 print("二酸化炭素排出量（百万t） = ", co2)
@@ -163,9 +171,9 @@ print("二酸化炭素排出量（百万t） = ", co2)
 
 """
 
-reg_co2 = ################
-[hatb0, hatb1] = ################
-print("y = ", np.round(hatb0,2), " + ", np.round(hatb1,2), "x")
+reg_co2 = SimpleRegression(inc, co2)
+[hatb0, hatb1] = reg_co2.estRegCoeff()
+print("y = ", np.round(hatb0, 2), " + ", np.round(hatb1, 2), "x")
 
 """## 2.   二酸化炭素排出量とごみの焼却量の散布図と推定された回帰直線を描きなさい。
 
@@ -178,24 +186,24 @@ ax.set_ylabel("CO2 [$10^6$t]", fontsize=14)
 ax.grid()
 
 # 二酸化炭素排出量とごみの焼却量の散布図
-################
+ax.scatter(inc, co2, color="gray")
 
 # x軸の値を取得
 xticks = ax.get_xticks()
 # x軸の値に対する予測値を取得
-haty4xticks = ################
+haty4xticks = reg_co2.predict(xticks)
 # 回帰直線を引く
-################
+ax.plot(xticks, haty4xticks, color="blue")
 # グラフのアスペクト比を1:1にする
 ax.set_box_aspect(1)
 
 plt.tight_layout()
-#　ファイルに書き出し
-plt.savefig("./co2.pdf",dpi=300)
+# 　ファイルに書き出し
+plt.savefig(os.path.join(scriptDir, "co2.pdf"), dpi=300)
 
 """## 3.   求めた回帰モデルの決定係数$R^2$を求めなさい。"""
 
-param = ################
+param = reg_co2.calcCoeffDet()
 print("SSR = ", param[0])
 print("SSE = ", param[1])
 print("SST = ", param[2])
@@ -205,5 +213,5 @@ print("R2 = ", param[3])
 
 [4の解答欄]
 
-できる。なぜなら〜。
+できないと思う．なぜならば，R2が0.3と低く，ごみ焼却量と二酸化炭素排出量の関係は弱いと考えられる．また，SSTが約1300に対してSSEが約84000と大きく，回帰モデルによって両者の関係を説明することは妥当ではないと考えられるからである．
 """
