@@ -99,6 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         messageElement.textContent = '';
         isThinking = false;
         progressContainerElement.classList.add('hidden');
+
+        updateTurnClasses();
+
         renderBoard();
         updateScores();
         highlightValidMoves();
@@ -126,6 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         boardElement.querySelectorAll('.cell').forEach(cell => {
             cell.addEventListener('click', handleCellClick);
+            // プレビュー機能のためにマウスイベントリスナーを追加
+            cell.addEventListener('mouseenter', handleCellMouseEnter);
+            cell.addEventListener('mouseleave', handleCellMouseLeave);
         });
     }
 
@@ -149,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const col = parseInt(event.currentTarget.dataset.col);
 
         if (isValidMove(row, col, currentPlayer, board)) {
+            clearPreview(); // 石を置く直前にプレビューをクリア
             placeAndFlip(row, col, currentPlayer);
             switchPlayer();
         } else {
@@ -164,6 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function switchPlayer() {
         currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+
+        updateTurnClasses();
+
         renderBoard();
         updateScores();
         highlightValidMoves();
@@ -180,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Wait a moment before the other player plays
             setTimeout(() => {
                 currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+                updateTurnClasses();
                 updateScores();
                 highlightValidMoves();
                 if (isGameOver(board)) {
@@ -213,9 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cell.classList.remove('valid-move');
         });
 
-        // Don't show hints for CPU
-        if (gameMode === 'pvc' && currentPlayer === cpuColor) return;
-
+        // Get and show valid moves for the current player
         const validMoves = getValidMoves(currentPlayer, board);
         validMoves.forEach(({ row, col }) => {
             const cell = boardElement.querySelector(`[data-row='${row}'][data-col='${col}']`);
@@ -229,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentBoard[row]?.[col] !== null) {
             return false;
         }
+        // getFlippedDiscsの結果が空配列でなければ、その手は有効
         return getFlippedDiscs(row, col, player, currentBoard).length > 0;
     }
 
@@ -291,17 +301,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CPU Logic ---
     async function cpuMove() {
         isThinking = true;
+        clearPreview(); // 念のためプレビューをクリア
         messageElement.textContent = 'CPUが考慮中です...';
         progressContainerElement.classList.remove('hidden');
         progressBarElement.style.width = '0%';
         boardElement.style.pointerEvents = 'none';
 
+        // 少し待って「考慮中」メッセージを表示させる
         await new Promise(resolve => setTimeout(resolve, 50));
 
         const depth = cpuLevel;
         const bestMove = await findBestMove(board, cpuColor, depth);
 
+        // プレビュー表示
         if (bestMove) {
+            showPreview(bestMove.row, bestMove.col);
+            // プレビューを少しの間表示するための待機
+            await new Promise(resolve => setTimeout(resolve, 600));
+            clearPreview(); // 石を置く直前にプレビューを消す
             placeAndFlip(bestMove.row, bestMove.col, cpuColor);
         }
 
@@ -331,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const progress = ((i + 1) / validMoves.length) * 100;
             progressBarElement.style.width = `${progress}%`;
 
+            // UIが固まらないように、ループ内で少し待機する
             await new Promise(resolve => setTimeout(resolve, 0));
         }
         return bestMove;
@@ -400,6 +418,84 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         return playerScore - opponentScore;
+    }
+
+    /**
+     * 現在のターンに応じてbodyタグのクラスを更新する
+     */
+    function updateTurnClasses() {
+        document.body.classList.remove('turn-black', 'turn-white', 'cpu-turn');
+        document.body.classList.add(`turn-${currentPlayer}`);
+        if (gameMode === 'pvc' && currentPlayer === cpuColor) {
+            document.body.classList.add('cpu-turn');
+        }
+    }
+
+    // --- Preview Logic ---
+
+    /**
+     * マウスがセルに乗った時の処理
+     * @param {MouseEvent} event - マウスイベント
+     */
+    function handleCellMouseEnter(event) {
+        if (isThinking) return; // CPU思考中はプレビューしない
+        const cell = event.currentTarget;
+
+        // 有効な手を示すマーカーが付いているセルでのみプレビューを表示
+        if (!cell.classList.contains('valid-move')) return;
+
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
+
+        showPreview(row, col);
+    }
+
+    /**
+     * マウスがセルから離れた時の処理
+     */
+    function handleCellMouseLeave() {
+        if (isThinking) return;
+        clearPreview();
+    }
+
+    /**
+     * 指定された位置に石を置いた場合のプレビューを表示する
+     * @param {number} row - 石を置く行
+     * @param {number} col - 石を置く列
+     */
+    function showPreview(row, col) {
+        // 1. これから置く石のプレビュー（半透明）
+        const targetCell = boardElement.querySelector(`[data-row='${row}'][data-col='${col}']`);
+        if (!targetCell) return;
+
+        const previewDisc = document.createElement('div');
+        // 'preview-disc'と現在のプレイヤーの色クラスを付与
+        previewDisc.className = `preview-disc ${currentPlayer}`;
+        targetCell.appendChild(previewDisc);
+
+        // 2. ひっくり返る石のプレビュー（色が反転）
+        const flippedDiscs = getFlippedDiscs(row, col, currentPlayer, board);
+        flippedDiscs.forEach(([r, c]) => {
+            const flippedCell = boardElement.querySelector(`[data-row='${r}'][data-col='${c}']`);
+            const disc = flippedCell?.querySelector('.disc');
+            if (disc) {
+                // 'preview-flip'クラスを付与してCSSで見た目を変更
+                disc.classList.add('preview-flip');
+            }
+        });
+    }
+
+    /**
+     * すべてのプレビュー表示をクリアする
+     */
+    function clearPreview() {
+        // 半透明のプレビュー石を全て削除
+        const previewDiscs = boardElement.querySelectorAll('.preview-disc');
+        previewDiscs.forEach(disc => disc.remove());
+
+        // ひっくり返る石のハイライト（クラス）を全て削除
+        const flippedPreviews = boardElement.querySelectorAll('.preview-flip');
+        flippedPreviews.forEach(disc => disc.classList.remove('preview-flip'));
     }
 
     // --- Initial setup ---
