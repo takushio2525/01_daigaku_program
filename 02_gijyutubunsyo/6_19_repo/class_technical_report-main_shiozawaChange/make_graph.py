@@ -45,4 +45,5 @@ axs[1].grid(True)
 
 # Display the plot
 plt.tight_layout()
+# plt.savefig(os.path.join(scriptDir, "comparison_plot.pdf"))
 plt.show()
