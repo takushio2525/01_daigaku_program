@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オセロゲーム</title>
+    <link rel="stylesheet" href="othello.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="title-container" class="screen-container">
+        <h1 class="game-title">OTHELLO</h1>
+        <button id="show-setup-button" class="btn">START</button>
+    </div>
+
+    <div id="setup-container" class="screen-container hidden">
+        <h2 class="section-title">GAME SETUP</h2>
+        <div class="setup-item">
+            <label>モード選択:</label>
+            <div class="radio-group">
+                <input type="radio" id="mode-pvp" name="game-mode" value="pvp" checked>
+                <label for="mode-pvp">対人戦</label>
+                <input type="radio" id="mode-pvc" name="game-mode" value="pvc">
+                <label for="mode-pvc">CPU戦</label>
+            </div>
+        </div>
+        <div id="cpu-options" class="hidden">
+            <div class="setup-item">
+                <label for="cpu-level">CPUレベル:</label>
+                <select id="cpu-level">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5" selected>5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+            </div>
+            <div class="setup-item">
+                <label>手番選択:</label>
+                <div class="radio-group">
+                    <input type="radio" id="player-black" name="player-color" value="black" checked>
+                    <label for="player-black">先手 (黒)</label>
+                    <input type="radio" id="player-white" name="player-color" value="white">
+                    <label for="player-white">後手 (白)</label>
+                </div>
+            </div>
+        </div>
+        <div class="setup-buttons">
+            <button id="start-game-button" class="btn">GAME START</button>
+            <button id="back-to-title-button" class="btn btn-secondary">タイトルへ戻る</button>
+        </div>
+    </div>
+
+    <div id="game-container" class="screen-container hidden">
+        <div id="game-panel">
+            <div id="game-info">
+                <div id="score">
+                    <span class="score-label">黒:</span> <span id="black-score">2</span>
+                    <span class="score-label">|</span>
+                    <span class="score-label">白:</span> <span id="white-score">2</span>
+                </div>
+                <div id="turn-info">
+                    現在のプレイヤー: <span id="current-player"></span>
+                </div>
+            </div>
+            <div id="message-container">
+                <div id="message"></div>
+                <div id="progress-container" class="hidden">
+                    <div id="progress-bar"></div>
+                </div>
+            </div>
+            <button id="restart-button" class="btn btn-secondary">設定に戻る</button>
+        </div>
+        <div id="board"></div>
+    </div>
+
+    <script src="othello.js"></script>
+</body>
+
+</html>
