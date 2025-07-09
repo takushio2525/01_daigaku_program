@@ -313,13 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const depth = cpuLevel;
         const bestMove = await findBestMove(board, cpuColor, depth);
 
-        // プレビュー表示
+        // 最終的な手に確定したプレビューを少し見せる
         if (bestMove) {
-            showPreview(bestMove.row, bestMove.col);
-            // プレビューを少しの間表示するための待機
-            await new Promise(resolve => setTimeout(resolve, 600));
+            await new Promise(resolve => setTimeout(resolve, 500));
             clearPreview(); // 石を置く直前にプレビューを消す
             placeAndFlip(bestMove.row, bestMove.col, cpuColor);
+        } else {
+            // パスの場合など
+            clearPreview();
         }
 
         isThinking = false;
@@ -331,25 +332,36 @@ document.addEventListener('DOMContentLoaded', () => {
     async function findBestMove(currentBoard, player, depth) {
         const validMoves = getValidMoves(player, currentBoard);
         if (validMoves.length === 0) return null;
-        if (validMoves.length === 1) return validMoves[0];
+        if (validMoves.length === 1) {
+            showPreview(validMoves[0].row, validMoves[0].col);
+            return validMoves[0];
+        }
 
         let bestScore = -Infinity;
         let bestMove = validMoves[0];
+
+        // 最初の候補をまずプレビュー
+        showPreview(bestMove.row, bestMove.col);
 
         for (let i = 0; i < validMoves.length; i++) {
             const move = validMoves[i];
             const tempBoard = cloneBoard(currentBoard);
             applyMove(tempBoard, move, player);
             const score = alphaBeta(tempBoard, depth - 1, -Infinity, Infinity, false, player);
+
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
+                // 最善手が変わるたびにプレビューを更新
+                clearPreview();
+                showPreview(bestMove.row, bestMove.col);
             }
+
             const progress = ((i + 1) / validMoves.length) * 100;
             progressBarElement.style.width = `${progress}%`;
 
             // UIが固まらないように、ループ内で少し待機する
-            await new Promise(resolve => setTimeout(resolve, 0));
+            await new Promise(resolve => setTimeout(resolve, 10));
         }
         return bestMove;
     }

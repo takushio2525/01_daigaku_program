@@ -1,0 +1,41 @@
+\NeedsTeXFormat{LaTeX2e}[2023/11/01]
+\ProvidesPackage{hira-stix}
+ [2024/04/02 v1.0%
+ hira-stix
+ font support by Saba]
+ 
+\DeclareFontShape{JY2}{hmc}{m}{it}{<->ssub*hmc/m/n}{}
+\DeclareFontShape{JT2}{hmc}{m}{it}{<->ssub*hmc/m/n}{}
+\DeclareFontShape{JY2}{hmc}{m}{sl}{<->ssub*hmc/m/n}{}
+\DeclareFontShape{JT2}{hmc}{m}{sl}{<->ssub*hmc/m/n}{}
+\DeclareFontShape{JY2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
+\DeclareFontShape{JT2}{hmc}{b}{n}{<->ssub*hmc/bx/n}{}
+
+\DeclareFontShape{JY2}{hgt}{m}{it}{<->ssub*hgt/m/n}{}
+\DeclareFontShape{JT2}{hgt}{m}{it}{<->ssub*hgt/m/n}{}
+\DeclareFontShape{JY2}{hgt}{m}{sl}{<->ssub*hgt/m/n}{}
+\DeclareFontShape{JT2}{hgt}{m}{sl}{<->ssub*hgt/m/n}{}
+\DeclareFontShape{JY2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
+\DeclareFontShape{JT2}{hgt}{b}{n}{<->ssub*hgt/bx/n}{}
+
+\DeclareFontFamily{LS1}{stix2bb}{\skewchar\font127 }
+\DeclareFontShape{LS1}{stix2bb}{m}{n} {<-> stix2-mathbb}{}
+\DeclareFontShape{LS1}{stix2bb}{m}{it}{<-> stix2-mathbbit}{}
+\DeclareFontShape{LS1}{stix2bb}{b}{n} {<->ssub * stix2bb/m/n}{}
+\DeclareFontShape{LS1}{stix2bb}{b}{it}{<->ssub * stix2bb/m/it}{}
+
+\DeclareFontFamily{LS2}{stix2ex}{}
+\DeclareFontShape{LS2}{stix2ex}{m}{n} {<-> stix2-mathex}{}
+\DeclareFontShape{LS2}{stix2ex}{b}{n} {<->ssub * stix2ex/m/n}{}
+
+\DeclareFontFamily{LS2}{stix2cal}{\skewchar\font127 }
+\DeclareFontShape{LS2}{stix2cal}{m}{n} {<-> stix2-mathcal}{}
+\DeclareFontShape{LS2}{stix2cal}{b}{n} {<->ssub * stix2cal/m/n}{}
+
+\DeclareFontFamily{LS2}{stix2tt}{\skewchar\font127 }
+\DeclareFontShape{LS2}{stix2tt}{m}{n} {<-> stix2-mathtt}{}
+\DeclareFontShape{LS2}{stix2tt}{b}{n} {<->ssub * stix2tt/m/n}{}
+
+\endinput
+%%
+%% End of file `hira-stix.sty'.

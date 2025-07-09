@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>麻雀ゲーム</title>
+    <link rel="stylesheet" href="mahjong.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <h1>麻雀ゲーム</h1>
+        <div id="game-board">
+            <!-- 対面の手牌 -->
+            <div id="opponent-hand" class="hand horizontal-hand">
+                <div class="tile back"></div>
+                <!-- ... more tiles -->
+            </div>
+
+            <!-- 山 (表示用) -->
+            <div id="center-area">
+                <div id="wall">
+                    <div class="wall-segment"></div>
+                    <div class="wall-segment"></div>
+                </div>
+                <div id="river"></div>
+            </div>
+
+
+            <!-- 下家 (右) の手牌 -->
+            <div id="right-hand" class="hand vertical-hand">
+                <div class="tile back"></div>
+                <!-- ... more tiles -->
+            </div>
+
+            <!-- 上家 (左) の手牌 -->
+            <div id="left-hand" class="hand vertical-hand">
+                <div class="tile back"></div>
+                <!-- ... more tiles -->
+            </div>
+
+            <!-- プレイヤーの手牌 -->
+            <div id="player-hand" class="hand horizontal-hand">
+                <!-- JavaScriptで生成 -->
+            </div>
+        </div>
+        <div id="controls">
+            <button>ポン</button>
+            <button>チー</button>
+            <button>カン</button>
+            <button>リーチ</button>
+            <button id="tsumo-btn">ツモ</button>
+            <button id="dahai-btn">打牌</button>
+        </div>
+    </div>
+    <script src="mahjong.js"></script>
+</body>
+
+</html>

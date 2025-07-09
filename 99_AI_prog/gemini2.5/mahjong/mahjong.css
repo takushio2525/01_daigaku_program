@@ -1,0 +1,150 @@
+body {
+    background-color: #004d00;
+    /* 深い緑色の背景 */
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#game-container {
+    text-align: center;
+}
+
+#game-board {
+    width: 800px;
+    height: 800px;
+    background-color: #006a00;
+    /* 少し明るい緑 */
+    border: 10px solid #543a1a;
+    /* 木枠のようなボーダー */
+    border-radius: 20px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 120px auto 120px;
+    grid-template-rows: 120px auto 120px;
+    grid-template-areas:
+        ". opponent ."
+        "left center right"
+        ". player .";
+}
+
+#center-area {
+    grid-area: center;
+    background-color: #005c00;
+    border: 2px solid #004d00;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#wall {
+    color: #ccc;
+    font-size: 14px;
+}
+
+#river {
+    width: 80%;
+    height: 80%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+}
+
+.hand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#player-hand {
+    grid-area: player;
+}
+
+#opponent-hand {
+    grid-area: opponent;
+}
+
+#left-hand {
+    grid-area: left;
+    flex-direction: column;
+}
+
+#right-hand {
+    grid-area: right;
+    flex-direction: column;
+}
+
+.tile {
+    width: 45px;
+    height: 65px;
+    background-color: #f0f0f0;
+    /* 牌の基本色 */
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* アスペクト比を維持して画像を表示 */
+}
+
+.tile.red-dragon {
+    /* 赤ドラのスタイル（例：枠線を赤くする） */
+    border: 2px solid red;
+}
+
+.tile.back {
+    background-color: #2a752a;
+    /* 牌の裏の色 */
+    color: transparent;
+}
+
+.vertical-hand .tile {
+    width: 65px;
+    height: 45px;
+}
+
+#controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #e0c8a0;
+    border: 2px solid #543a1a;
+    border-radius: 8px;
+    color: #543a1a;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#controls button:hover {
+    background-color: #f5e5c5;
+}

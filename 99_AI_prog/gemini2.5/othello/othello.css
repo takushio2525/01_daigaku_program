@@ -284,18 +284,21 @@ select#cpu-level {
     position: absolute;
     width: 35%;
     height: 35%;
-    background-color: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     animation: blink 1.5s infinite;
     transition: background-color 0.3s ease;
 }
 
-.cpu-turn .valid-move::after {
+/* 黒番のときのマーカー */
+.turn-black .valid-move::after {
     background-color: rgba(44, 62, 80, 0.5);
     /* 黒っぽい半透明 */
-    animation: none;
-    /* CPUターンでは点滅させない */
-    opacity: 0.6;
+}
+
+/* 白番のときのマーカー */
+.turn-white .valid-move::after {
+    background-color: rgba(255, 255, 255, 0.7);
+    /* 白っぽい半透明 */
 }
 
 #message-container {
