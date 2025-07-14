@@ -1,0 +1,272 @@
+\documentclass[uplatex]{jsarticle}
+\usepackage{amsmath}
+\usepackage[dvipdfmx]{graphicx}
+
+\setcounter{tocdepth}{3}
+\usepackage{float}
+\usepackage{moreverb}
+\usepackage{lscape}
+%\pagestyle{empty}
+%\usepackage{wrapfig}
+%\usepackage{url}
+%\usepackage{EasyLayout}
+
+\usepackage{ascmac}
+%\usepackage{fancybx}
+
+%\pagestyle{myheadings}
+\usepackage[dvipdfmx,
+colorlinks=true,
+linkcolor=black,
+citecolor=black,
+urlcolor=black]{hyperref}
+
+
+
+\begin{document}
+
+
+\title{patternlib仕様書}
+\author{25G1065 塩澤匠生}
+
+\date{\today}
+\maketitle
+
+\begin{abstract}
+本書は、C言語ライブラリ `patternlib` の仕様を記述したものである。本ライブラリは、特定の構造を持つ3次元配列のデータに基づき、文字や記号を組み合わせたアスキーアートを端末（ターミナル）上に出力する機能を提供する。出力するアートの拡大・縮小、配色、縦横の表示方向など、多彩な表示オプションを指定できることを特徴とする。
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\section{モジュールの概要}
+本ライブラリは、コンソールアプリケーションにおいて、テキストベースで豊かな表現を行うことを目的として開発された。数値データを視覚的なパターンに変換して表示することにより、プログラムの出力をより直感的で分かりやすいものにすることを目指す。
+
+\subsection{機能}
+`patternlib` は、主に以下の機能を提供する。
+\begin{itemize}
+    \item 3次元配列で定義されたパターンの描画
+    \item 描画文字、拡大率、配色の指定
+    \item 複数文字パターンの縦連結および横連結表示
+\end{itemize}
+
+\section{設定}
+\subsection{ビルド時設定}
+ヘッダファイル `patternlib.h` で定義される定数について説明する。これらの値を変更してライブラリを再コンパイルすることで、1文字あたりのデフォルトの描画サイズを調整できる。
+
+\begin{description}
+    \item[\texttt{COL\_SIZE}] 1文字を描画する際の、基本となる列数（横幅）を定義する。デフォルト値は8。
+    \item[\texttt{ROW\_SIZE}] 1文字を描画する際の、基本となる行数（縦幅）を定義する。デフォルト値は8。
+\end{description}
+
+\subsection{実行時設定}
+ライブラリの動作は、`show\_array`関数に渡す引数によって実行時に制御される。詳細は「関数の説明」のセクションを参照。
+
+\section{関数の説明}
+
+\subsection{データ構造}
+本ライブラリが描画に用いるパターンは、以下の構造を持つ3次元整数型配列で定義される。
+\begin{verbatim}
+int pattern[文字数][ROW_SIZE][COL_SIZE];
+\end{verbatim}
+配列の各要素の値は、ピクセルごとの描画状態を意味する。
+\begin{itemize}
+    \item \texttt{0}: 背景（空白）
+    \item \texttt{1}以上: 描画ピクセル。色指定時にはANSIエスケープシーケンスのカラーコード（1-7）として解釈される。
+\end{itemize}
+
+\subsection{関数概要}
+\begin{table}[H]
+    \centering
+    \caption{関数一覧}
+    \begin{tabular}{|l|p{9cm}|}
+        \hline
+        \textbf{関数名} & \textbf{説明} \\ \hline
+        \texttt{show\_array} & 3次元配列データに基づき、パターンを描画する。 \\ \hline
+        \texttt{show\_array\_vertical\_scaled} & (内部関数) パターンを縦に並べて拡大表示する。 \\ \hline
+        \texttt{show\_array\_horizontal\_scaled} & (内部関数) パターンを横に並べて拡大表示する。 \\ \hline
+        \texttt{print\_char} & (内部関数) 1文字をターミナルに出力する。 \\ \hline
+        \texttt{print\_char\_colored} & (内部関数) 1文字を色付きでターミナルに出力する。 \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{関数の詳細}
+
+\subsubsection{show\_array}
+指定されたパターン配列に基づき、ターミナルに文字を描画する主要な関数。
+\begin{verbatim}
+void show_array(
+    int array[][ROW_SIZE][COL_SIZE],
+    char _char,
+    int len_c,
+    int scale,
+    int color_flag,
+    int horizontal_flag
+);
+\end{verbatim}
+\paragraph{詳細}
+本関数は、`array`に格納されたパターン情報に従って、指定された文字 `\_char` を用いてターミナル上に図形を描画する。`scale`引数で拡大表示、`color\_flag`で色付け、`horizontal\_flag`で複数パターンの表示方向（縦/横）を制御できる。
+
+\paragraph{引数}
+\begin{table}[H]
+    \centering
+    \caption{show\_array関数の引数}
+    \begin{tabular}{|l|p{9cm}|}
+        \hline
+        \textbf{引数名} & \textbf{説明} \\ \hline
+        \texttt{array} & 描画するパターンを格納した3次元配列。 \\ \hline
+        \texttt{\_char} & パターンの描画に用いる文字。 \\ \hline
+        \texttt{len\_c} & \texttt{array}に含まれる文字パターンの総数。 \\ \hline
+        \texttt{scale} & 描画の拡大率。1以上の整数を指定する。 \\ \hline
+        \texttt{color\_flag} & カラー表示の有効化フラグ。0以外を指定すると、配列の値をANSIカラーコードとして解釈し、色付きで描画する。 \\ \hline
+        \texttt{horizontal\_flag} & 描画方向の指定フラグ。0以外を指定すると複数の文字パターンを横に並べて描画する。0の場合は縦に並べる。 \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{show\_array\_vertical\_scaled}
+複数の文字パターンを縦に連結し、指定された倍率で拡大して表示する。
+\begin{verbatim}
+void show_array_vertical_scaled(
+    int array[][ROW_SIZE][COL_SIZE],
+    char _char,
+    int len_c,
+    int scale,
+    int color_flag
+);
+\end{verbatim}
+\paragraph{詳細}
+`show\_array`から`horizontal\_flag`が0の場合に呼び出される内部関数。文字パターンを縦方向に並べて描画する。
+\paragraph{引数}
+`show\_array`関数と同様（`horizontal\_flag`を除く）。
+
+\subsubsection{show\_array\_horizontal\_scaled}
+複数の文字パターンを横に連結し、指定された倍率で拡大して表示する。
+\begin{verbatim}
+void show_array_horizontal_scaled(
+    int array[][ROW_SIZE][COL_SIZE],
+    char _char,
+    int len_c,
+    int scale,
+    int color_flag
+);
+\end{verbatim}
+\paragraph{詳細}
+`show\_array`から`horizontal\_flag`が0以外の場合に呼び出される内部関数。文字パターンを横方向に並べて描画する。
+\paragraph{引数}
+`show\_array`関数と同様（`horizontal\_flag`を除く）。
+
+\subsubsection{print\_char}
+1ピクセルに相当する文字をターミナルに1文字表示する。
+\begin{verbatim}
+void print_char(int flag, char _char);
+\end{verbatim}
+\paragraph{詳細}
+ピクセルデータ(`flag`)に基づき、指定された文字(`\_char`)または空白を出力する。`show\_array`から呼び出される低レベル描画関数。
+\paragraph{引数}
+\begin{table}[H]
+    \centering
+    \caption{print\_char関数の引数}
+    \begin{tabular}{|l|p{9cm}|}
+        \hline
+        \textbf{引数名} & \textbf{説明} \\ \hline
+        \texttt{flag} & ピクセルデータ。0の場合は空白を出力し、それ以外の場合は`\_char`を出力する。 \\ \hline
+        \texttt{\_char} & 描画に用いる文字。 \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{print\_char\_colored}
+1ピクセルに相当する文字をターミナルに1文字、色付きで表示する。
+\begin{verbatim}
+void print_char_colored(int flag, char _char, int color);
+\end{verbatim}
+\paragraph{詳細}
+ピクセルデータ(`flag`)に基づき、指定された文字(`\_char`)または空白を、指定色(`color`)で出力する。
+\paragraph{引数}
+\begin{table}[H]
+    \centering
+    \caption{print\_char\_colored関数の引数}
+    \begin{tabular}{|l|p{9cm}|}
+        \hline
+        \textbf{引数名} & \textbf{説明} \\ \hline
+        \texttt{flag} & ピクセルデータ。0の場合は空白を出力し、それ以外の場合は色付きで`\_char`を出力する。 \\ \hline
+        \texttt{\_char} & 描画に用いる文字。 \\ \hline
+        \texttt{color} & ANSIエスケープシーケンスのカラーコード(0-7)を指定する。 \\ \hline
+    \end{tabular}
+\end{table}
+
+\section{使用例}
+以下に、`patternlib`ライブラリを使用して簡単なパターンを描画するC言語のコード例を示す。
+
+\begin{verbatim}
+#include <stdio.h>
+#include "patternlib.h"
+
+int main(void) {
+    // 'A'の文字パターンを定義 (8x8)
+    int pattern_A[1][ROW_SIZE][COL_SIZE] = {
+        {
+            {0,0,0,1,1,0,0,0},
+            {0,0,1,0,0,1,0,0},
+            {0,1,0,0,0,0,1,0},
+            {0,1,1,1,1,1,1,0},
+            {0,1,0,0,0,0,1,0},
+            {0,1,0,0,0,0,1,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0}
+        }
+    };
+
+    printf("--- デフォルト表示 ---\n");
+    show_array(pattern_A, '#', 1, 1, 0, 0);
+
+    printf("\n--- 2倍拡大表示 ---\n");
+    show_array(pattern_A, '*', 1, 2, 0, 0);
+
+    // 色付きのパターンを定義 (値2を緑色とする)
+    int pattern_color[1][ROW_SIZE][COL_SIZE] = {
+        {
+            {0,2,2,2,2,2,2,0},
+            {0,2,0,0,0,0,2,0},
+            {0,2,2,2,2,2,2,0},
+            {0,2,0,0,0,0,2,0},
+            {0,2,0,0,0,0,2,0},
+            {0,2,0,0,0,0,2,0},
+            {0,2,0,0,0,0,2,0},
+            {0,0,0,0,0,0,0,0}
+        }
+    };
+    printf("\n--- カラー表示 ---\n");
+    show_array(pattern_color, ' ', 1, 1, 1, 0);
+
+    return 0;
+}
+\end{verbatim}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

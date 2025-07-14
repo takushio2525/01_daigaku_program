@@ -20,6 +20,6 @@ int main(void)
                             {0, 0, 0, 0, 0, 0, 0, 0}}};
 
     int len_c = sizeof(pattern) / sizeof(pattern[0]);
-    show_array(pattern, 'c', len_c, 1, 1, 1);
+    show_array(pattern, ' ', len_c, 2, 1, 1);
     return 0;
 }
