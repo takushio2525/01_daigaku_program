@@ -1,0 +1,202 @@
+\documentclass[uplatex]{jsarticle}
+\usepackage{amsmath}
+\usepackage[dvipdfmx]{graphicx}
+
+\setcounter{tocdepth}{3}
+\usepackage{float}
+\usepackage{moreverb}
+\usepackage{lscape}
+%\pagestyle{empty}
+%\usepackage{wrapfig}
+%\usepackage{url}
+%\usepackage{EasyLayout}
+\usepackage{moreverb}
+\usepackage{lscape}
+\usepackage{caption}
+
+\usepackage{ascmac}
+%\usepackage{fancybx}
+
+%\pagestyle{myheadings}
+\usepackage{hyperref}
+
+
+
+\begin{document}
+
+
+\title{首振り機能付きエアコン}
+\author{25G1065 塩澤匠生}
+
+%\date{2015年11月13日}
+\maketitle
+
+
+\section{概要}
+
+この
+
+\section{定数の説明}
+\subsection{COL\_SIZE}
+配列で表現する文字のマトリクスデータの行数を指定する定数．
+\subsection{ROW\_SIZE}
+配列で表現する文字のマトリクスデータの列数を指定する定数．
+
+\section{関数の説明}
+\subsection{関数一覧}
+\begin{table}[H]
+    \centering
+    \caption{関数一覧}
+    \begin{tabular}{|l|p{9cm}|}
+        \hline
+        \textbf{関数名} & \textbf{説明} \\ \hline
+        \texttt{show\_array} & 3次元配列データに基づき，パターンを描画する． \\ \hline
+        \texttt{show\_array\_vertical\_scaled} & (内部関数) パターンを縦に並べて拡大表示する． \\ \hline
+        \texttt{show\_array\_horizontal\_scaled} & (内部関数) パターンを横に並べて拡大表示する． \\ \hline
+        \texttt{print\_char} & (内部関数) 1文字をターミナルに出力する． \\ \hline
+        \texttt{print\_char\_colored} & (内部関数) 1文字を色付きでターミナルに出力する． \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{show\_array関数}
+\texttt{void show\_array(array[][ROW\_SIZE][COL\_SIZE], \_char, len\_c, scale, color\_flag, int horizontal\_flag);}
+\paragraph{機能}
+本関数は，`array`に格納されたパターン情報に従って，指定された文字 `\_char` を用いてターミナル上に図形を描画する．`scale`引数で拡大表示，`color\_flag`で色付け，`horizontal\_flag`で複数パターンの表示方向（縦/横）を制御できる．
+基本的にこの関数を実行することを推奨する．
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{show\_array関数の引数}
+    \begin{tabular}{|l|l|p{7.5cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{int[][][]} & \texttt{array} & 描画するパターンを格納した3次元配列． \\ \hline
+        \texttt{char} & \texttt{\_char} & パターンの描画に用いる文字． \\ \hline
+        \texttt{int} & \texttt{len\_c} & \texttt{array}に含まれる文字パターンの総数． \\ \hline
+        \texttt{int} & \texttt{scale} & 描画の拡大率．1以上の整数を指定する． \\ \hline
+        \texttt{int} & \texttt{color\_flag} & カラー表示の有効化フラグ．0以外を指定すると，配列の値をANSIカラーコードとして解釈し，色付きで描画する． \\ \hline
+        \texttt{int} & \texttt{horizontal\_flag} & 描画方向の指定フラグ．0以外を指定すると複数の文字パターンを横に並べて描画する．0の場合は縦に並べる． \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+horizontal\_flagが0だったらshow\_array\_vertical\_scaled関数を実行し，
+そうでなければ
+show\_array\_horizontal\_scaled関数を実行する．
+
+\subsubsection{show\_array\_vertical\_scaled関数}
+\texttt{void show\_array\_vertical\_scaled(int array[][ROW\_SIZE][COL\_SIZE], char \_char, int len\_c, int scale, int color\_flag);}
+\paragraph{機能}
+複数の文字パターンを縦に連結し，指定された倍率で拡大して表示する．`show\_array`から`horizontal\_flag`が0の場合に呼び出される内部関数．
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{show\_array\_vertical\_scaled関数の引数}
+    \begin{tabular}{|l|l|p{7cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{int[][][]} & \texttt{array} & 描画するパターンを格納した3次元配列． \\ \hline
+        \texttt{char} & \texttt{\_char} & パターンの描画に用いる文字． \\ \hline
+        \texttt{int} & \texttt{len\_c} & \texttt{array}に含まれる文字パターンの総数． \\ \hline
+        \texttt{int} & \texttt{scale} & 描画の拡大率．1以上の整数を指定する． \\ \hline
+        \texttt{int} & \texttt{color\_flag} & カラー表示の有効化フラグ．0以外を指定すると色付きで描画する． \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+指定された文字数(`len\_c`)だけループを回し，各文字パターンを縦に描画する．入れ子になったループを用いて，まず文字ごと(`c`)，次に行ごと(`y`)，そして列ごと(`x`)に処理を行う．拡大率(`scale`)に応じて，各ピクセルを水平・垂直方向に繰り返し描画する．`color\_flag`が有効な場合は`print\_char\_colored`を，無効な場合は`print\_char`を呼び出して1ピクセル分の文字を出力する．各行の描画が終わるごとに改行する．
+
+\subsubsection{show\_array\_horizontal\_scaled関数}
+\begin{verbatim}
+void show_array_horizontal_scaled(int array[][ROW_SIZE][COL_SIZE], char _char, int len_c, int scale, int color_flag);
+\end{verbatim}
+\paragraph{機能}
+複数の文字パターンを横に連結し，指定された倍率で拡大して表示する．`show\_array`から`horizontal\_flag`が0以外の場合に呼び出される内部関数．
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{show\_array\_horizontal\_scaled関数の引数}
+    \begin{tabular}{|l|l|p{7cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{int[][][]} & \texttt{array} & 描画するパターンを格納した3次元配列． \\ \hline
+        \texttt{char} & \texttt{\_char} & パターンの描画に用いる文字． \\ \hline
+        \texttt{int} & \texttt{len\_c} & \texttt{array}に含まれる文字パターンの総数． \\ \hline
+        \texttt{int} & \texttt{scale} & 描画の拡大率．1以上の整数を指定する． \\ \hline
+        \texttt{int} & \texttt{color\_flag} & カラー表示の有効化フラグ．0以外を指定すると色付きで描画する． \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+入れ子になったループを用いて，まず行ごと(`y`)，次に文字ごと(`c`)，そして列ごと(`x`)に処理を行うことで，各文字パターンを横に並べて描画する．拡大率(`scale`)に応じて，各ピクセルを水平・垂直方向に繰り返し描画する．`color\_flag`が有効な場合は`print\_char\_colored`を，無効な場合は`print\_char`を呼び出して1ピクセル分の文字を出力する．すべての文字の1行分が描画されると改行する．
+
+\subsubsection{print\_char関数}
+\texttt{void print\_char(int flag, char \_char);}
+\paragraph{機能}
+1ピクセルに相当する文字をターミナルに1文字表示する．ピクセルデータ(`flag`)に基づき，指定された文字(`\_char`)または空白を出力する．`show\_array`から呼び出される低レベル描画関数．
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{print\_char関数の引数}
+    \begin{tabular}{|l|l|p{7cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{int} & \texttt{flag} & ピクセルデータ．0の場合は空白，それ以外は文字を描画． \\ \hline
+        \texttt{char} & \texttt{\_char} & 描画に用いる文字． \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+`flag`が0の場合は空白を出力する．それ以外の場合，`\_char`がスペース文字であれば背景を白にして出力し，それ以外の文字であればそのまま出力する．
+
+\subsubsection{print\_char\_colored関数}
+\texttt{void print\_char\_colored(int flag, char \_char, int color);}
+\paragraph{機能}
+1ピクセルに相当する文字をターミナルに1文字，色付きで表示する．ピクセルデータ(`flag`)に基づき，指定された文字(`\_char`)または空白を，指定色(`color`)で出力する．
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{print\_char\_colored関数の引数}
+    \begin{tabular}{|l|l|p{7cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{int} & \texttt{flag} & ピクセルデータ．0の場合は空白，それ以外は文字を描画． \\ \hline
+        \texttt{char} & \texttt{\_char} & 描画に用いる文字． \\ \hline
+        \texttt{int} & \texttt{color} & ANSIエスケープシーケンスのカラーコード(0-7)． \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+`flag`が0の場合は空白を出力する．それ以外の場合，`\_char`がスペース文字であれば指定された色で背景色を設定して出力し，それ以外の文字であれば指定された色で文字色を設定して出力する．色の設定にはANSIエスケープシーケンスを用いる．
+
+\section{実行方法}
+以下サンプルコード
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

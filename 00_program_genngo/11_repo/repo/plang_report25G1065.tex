@@ -34,46 +34,38 @@
 
 
 
-\tableofcontents
-\clearpage
+
 
 \section{概要}
 
-このライブラリは３次元配列で作られた文字やグラフィックのマトリクスを下に簡単に
-ターミナルに指定した書式で出力することを可能にするライブラリである．
-
-本ライブラリは `Config` 構造体を用いて、表示に関する設定（拡大率、色、表示文字など）を一元管理する。文字列を渡すだけで、定義済みのフォントデータに基づいたアスキーアートを縦方向または横方向に表示できる。
-
-３次元配列のフォントデータ形式は`array[n文字目][行][列]`という
+このライブラリは大文字の英語と数字，！と？の記号で構成される文字列を
+設定された書式でターミナルに出力するものである．
+文字は8×8のドット文字で表現される．
+表示データは３次元配列でarray[n文字目][行][列]というデータ
 形式とする．0で空白，１で表示を示すデータとする．
-行と列の個数はデフォルトで８になっている．`COL\_SIZE`と
-`ROW\_SIZE`の値を変更することで任意に調整可能である．
-
-\section{定数の説明}
-\subsection{COL\_SIZE}
-配列で表現する文字のマトリクスデータの列数を指定する定数．
-\subsection{ROW\_SIZE}
-配列で表現する文字のマトリクスデータの行数を指定する定数．
-\subsection{FONT\_DATA\_SIZE}
-ライブラリに格納されているフォントデータの文字数を指定する定数。
+格納されている文字数は大文字の英語と数字，！と？の記号の数で
+64個，行と列の個数は8になっている．
+それぞれFONT\_DATA\_SIZE，ROW\_SIZE，COL\_SIZEとして
+\#defineで別名定義されている．この定数は変更しないことを前提とする．
 
 \section{構造体の説明}
 \subsection{Config構造体}
 \texttt{typedef struct Config \{...\}}
 \paragraph{機能}
-表示に関する設定やフォントデータをまとめて管理するための構造体。`init\_config`関数で初期化して使用する。
+表示に関する設定やフォントデータをまとめて管理するための構造体。
+`init\_config`関数で初期化して使用する。
 
 \paragraph{メンバ}
 \begin{center}
     \captionof{table}{Config構造体のメンバ}
-    \begin{tabular}{|l|l|p{7.5cm}|}
+    \begin{tabular}{|l|l|p{5.5cm}|}
         \hline
         \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
         \texttt{int} & \texttt{scale} & 描画の拡大率。1以上の整数を指定する。 \\ \hline
         \texttt{int} & \texttt{horizontal\_flag} & 描画方向の指定フラグ。1で横方向、0で縦方向。 \\ \hline
         \texttt{int} & \texttt{color\_flag} & カラー表示の有効化フラグ。1で有効。 \\ \hline
         \texttt{int} & \texttt{color} & ANSIカラーコード(0-7)を指定。 \\ \hline
-        \texttt{int[][][]} & \texttt{array} & フォントデータを格納する3次元配列。 \\ \hline
+        \texttt{int[FONT\_DATA\_SIZE][ROW\_SIZE][COL\_SIZE]} & \texttt{array} & フォントデータを格納する3次元配列。 \\ \hline
         \texttt{char} & \texttt{disp\_char} & パターンの描画に用いる文字。 \\ \hline
     \end{tabular}
 \end{center}
@@ -90,6 +82,7 @@
         \texttt{show\_str} & 文字列をアスキーアートで表示する。 \\ \hline
         \texttt{conv\_ASCII} & (内部関数) 文字をフォント配列のインデックスに変換する。 \\ \hline
         \texttt{setFontArray} & (内部関数) Config構造体にフォントデータを読み込む。 \\ \hline
+        \texttt{setFontArray\_manual} & (内部関数) Config構造体に手動でフォントデータを設定する。 \\ \hline
         \texttt{show\_str\_vertical\_scaled} & (内部関数) 文字列を縦方向に拡大表示する。 \\ \hline
         \texttt{show\_str\_horizontal\_scaled} & (内部関数) 文字列を横方向に拡大表示する。 \\ \hline
         \texttt{print\_char} & (内部関数) 1ピクセル分の文字をターミナルに出力する。 \\ \hline
@@ -100,7 +93,7 @@
 \subsection{init\_config関数}
 \texttt{void init\_config(Config *config);}
 \paragraph{機能}
-`Config`構造体のポインタを受け取り、そのメンバをデフォルト値で初期化する。拡大率を1、表示方向を縦、カラーを無効などに設定し、`setFontArray`を呼び出してフォントデータを読み込む。
+`Config`構造体のポインタを受け取り、そのメンバをデフォルト値で初期化する。
 
 \paragraph{引数}
 \begin{center}
@@ -111,6 +104,66 @@
         \texttt{Config*} & \texttt{config} & 初期化対象のConfig構造体へのポインタ。 \\ \hline
     \end{tabular}
 \end{center}
+
+\paragraph{メンバー初期値}
+`init\_config`関数は、`Config`構造体の各メンバーを以下の通りに初期化します。
+\begin{center}
+    \captionof{table}{init\_configによる初期値}
+    \begin{tabular}{|l|l|p{6cm}|}
+        \hline
+        \textbf{メンバー名} & \textbf{初期値} & \textbf{説明} \\ \hline
+        \texttt{scale} & \texttt{1} & 拡大率は1倍に設定されます。 \\ \hline
+        \texttt{horizontal\_flag} & \texttt{0} & 表示方向は縦方向に設定されます。 \\ \hline
+        \texttt{color\_flag} & \texttt{0} & カラー表示は無効に設定されます。 \\ \hline
+        \texttt{color} & \texttt{1} & デフォルトの描画色が設定されます。 \\ \hline
+        \texttt{disp\_char} & \texttt{' '} & 描画に用いる文字は空白文字に設定されます。 \\ \hline
+        \texttt{array} & --- & \texttt{setFontArray()}関数が呼び出され、フォントデータが読み込まれます。 \\ \hline
+    \end{tabular}
+\end{center}
+
+
+\subsection{conv\_ASCII関数}
+\texttt{int conv\_ASCII(char \_char);}
+\paragraph{機能}
+この関数は、文字（'A'-'Z', 'a'-'z', '0'-'9', '!', '?'）をフォントデータ配列に対応するインデックス（0-63）に変換する内部関数です。
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{conv\_ASCII関数の引数}
+    \begin{tabular}{|l|l|p{7.5cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{char} & \texttt{\_char} & 変換対象の文字。 \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+この関数は、入力された文字をフォントデータ配列のインデックスに変換します。対応するインデックスが存在しない場合はエラー値を返します。
+
+\subsection{setFontArray関数}
+\texttt{void setFontArray(int array[FONT\_DATA\_SIZE][ROW\_SIZE][COL\_SIZE]);}
+\paragraph{機能}
+ライブラリ内部にハードコードされたフォントデータを、引数で渡された`Config`構造体の`array`メンバにコピーする内部関数。
+
+\subsection{setFontArray\_manual関数}
+\texttt{void setFontArray\_manual(int setData[FONT\_DATA\_SIZE][ROW\_SIZE][COL\_SIZE], Config config);}
+\paragraph{機能}
+この関数は、手動でフォントデータを設定するための内部関数です。`setData` 配列の内容を `config.array` 配列にコピーします。
+
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{setFontArray\_manual関数の引数}
+    \begin{tabular}{|l|l|p{7.5cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{int[FONT\_DATA\_SIZE][ROW\_SIZE][COL\_SIZE]} & \texttt{setData} & コピー元の3次元配列。 \\ \hline
+        \texttt{Config} & \texttt{config} & コピー先の構造体。 \\ \hline
+    \end{tabular}
+\end{center}
+
+\paragraph{内部処理}
+この関数は、3重の入れ子ループを使用して、`setData` 配列のすべての要素を `config.array` 配列にコピーします。各ループは、`FONT\_DATA\_SIZE`、`ROW\_SIZE`、`COL\_SIZE` の範囲で反復します。
+
 
 \subsection{show\_str関数}
 \texttt{void show\_str(const char *str, Config config);}
@@ -131,32 +184,44 @@
 \paragraph{内部処理}
 `config`の`horizontal\_flag`が1（真）であれば`show\_str\_horizontal\_scaled`関数を、そうでなければ`show\_str\_vertical\_scaled`関数を呼び出す。
 
-\subsection{conv\_ASCII関数}
-\texttt{int conv\_ASCII(char \_char);}
-\paragraph{機能}
-文字（'A'-'Z', 'a'-'z', '0'-'9', '!', '?'）を、フォントデータ配列に対応するインデックス（0-63）に変換する内部関数。
-
-\subsection{setFontArray関数}
-\texttt{void setFontArray(int array[FONT\_DATA\_SIZE][ROW\_SIZE][COL\_SIZE]);}
-\paragraph{機能}
-ライブラリ内部にハードコードされたフォントデータを、引数で渡された`Config`構造体の`array`メンバにコピーする内部関数。
 
 \subsection{show\_str\_vertical\_scaled関数}
 \texttt{void show\_str\_vertical\_scaled(const char *str, Config config);}
 \paragraph{機能}
 文字列を構成する各文字を縦に連結し、指定された倍率で拡大して表示する。`show\_str`から`horizontal\_flag`が0の場合に呼び出される内部関数。
 
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{show\_str\_vertical\_scaled関数の引数}
+    \begin{tabular}{|l|l|p{7.5cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{const char*} & \texttt{str} & 描画する文字列。 \\ \hline
+        \texttt{Config} & \texttt{config} & 表示設定が格納されたConfig構造体。 \\ \hline
+    \end{tabular}
+\end{center}
+
 \paragraph{内部処理}
-与えられた文字列を1文字ずつループ処理する。各文字について、`conv\_ASCII`でインデックスを取得し、フォントデータを参照して行ごと、列ごとに描画する。`config.scale`に応じて各ピクセルを繰り返し描画し、拡大を実現する。
+入れ子になったループを用いて、まず文字列の各文字ごと(`*p`)、次に行ごと(`y`)、そして列ごと(`x`)に処理を行うことで、各文字パターンを縦に並べて描画します。拡大率(`config.scale`)に応じて、各ピクセルを水平・垂直方向に繰り返し描画します。ピクセルを描画する際には、`config.color\_flag`の値を確認します。フラグが有効な場合は`print\_char\_colored`を、無効な場合は`print\_char`を呼び出します。これらの関数には、描画に用いる文字として`config.disp\_char`が、色付き描画の場合は色として`config.color`が渡されます。各文字の描画が完了するたびに改行します。文字列の各文字は`conv\_ASCII`関数を使用してフォントデータ配列のインデックスに変換されます。
 
 \subsection{show\_str\_horizontal\_scaled関数}
 \texttt{void show\_str\_horizontal\_scaled(const char *str, Config config);}
 \paragraph{機能}
 文字列を構成する各文字を横に連結し、指定された倍率で拡大して表示する。`show\_str`から`horizontal\_flag`が1の場合に呼び出される内部関数。
 
-\paragraph{内部処理}
-まず行ごと(`y`)にループし、その中で与えられた文字列の各文字(`*p`)をループ処理する。これにより、全文字の同じ行が先に描画され、結果として横に並んで表示される。`config.scale`に応じた拡大も行う。
+\paragraph{引数}
+\begin{center}
+    \captionof{table}{show\_str\_horizontal\_scaled関数の引数}
+    \begin{tabular}{|l|l|p{7.5cm}|}
+        \hline
+        \textbf{型} & \textbf{名前} & \textbf{役割} \\ \hline
+        \texttt{const char*} & \texttt{str} & 描画する文字列。 \\ \hline
+        \texttt{Config} & \texttt{config} & 表示設定が格納されたConfig構造体。 \\ \hline
+    \end{tabular}
+\end{center}
 
+\paragraph{内部処理}
+入れ子になったループを用いて、まず行ごと(`y`)、次に文字列の各文字ごと(`*p`)、そして列ごと(`x`)に処理を行うことで、各文字パターンを横に並べて描画します。拡大率(`config.scale`)に応じて、各ピクセルを水平・垂直方向に繰り返し描画します。ピクセルを描画する際には、`config.color\_flag`の値を確認します。フラグが有効な場合は`print\_char\_colored`を、無効な場合は`print\_char`を呼び出します。これらの関数には、描画に用いる文字として`config.disp\_char`が、色付き描画の場合は色として`config.color`が渡されます。すべての文字の1行分が描画されると改行します。文字列の各文字は`conv\_ASCII`関数を使用してフォントデータ配列のインデックスに変換されます。
 \subsection{print\_char関数}
 \texttt{void print\_char(int flag, char \_char);}
 \paragraph{機能}
